@@ -56,25 +56,25 @@ const Calendar = ({ selectedDate, onDateSelect, scheduledOrders }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
+    <div className="bg-white rounded-lg border border-gray-100 p-6">
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={getPreviousMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
         >
-          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <h2 className="text-xl font-semibold text-gray-900">
+        <h2 className="text-lg font-light text-gray-900">
           {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
         </h2>
         <button
           onClick={getNextMonth}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
         >
-          <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -84,14 +84,14 @@ const Calendar = ({ selectedDate, onDateSelect, scheduledOrders }) => {
       <div className="grid grid-cols-7 gap-1">
         {/* Day Headers */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center py-2 text-sm font-medium text-gray-500">
+          <div key={day} className="text-center py-2 text-xs font-light text-gray-400">
             {day}
           </div>
         ))}
 
         {/* Empty cells for days before the first day of the month */}
         {Array.from({ length: startingDayOfWeek }, (_, i) => (
-          <div key={`empty-${i}`} className="h-12"></div>
+          <div key={`empty-${i}`} className="h-10"></div>
         ))}
 
         {/* Calendar days */}
@@ -107,23 +107,23 @@ const Calendar = ({ selectedDate, onDateSelect, scheduledOrders }) => {
               key={day}
               onClick={() => handleDateClick(day)}
               className={`
-                h-12 relative p-1 text-sm font-medium rounded-lg transition-colors
+                h-10 relative p-1 text-sm font-light rounded-lg transition-colors
                 ${isSelected 
-                  ? 'bg-blue-100 text-blue-700 border-2 border-blue-300' 
-                  : 'hover:bg-gray-50 text-gray-900'
+                  ? 'bg-blue-50 text-blue-600 border border-blue-200' 
+                  : 'hover:bg-gray-50 text-gray-700'
                 }
-                ${isToday ? 'ring-2 ring-blue-200' : ''}
+                ${isToday ? 'ring-1 ring-blue-200' : ''}
               `}
             >
               <span className="block">{day}</span>
               {hasOrders && (
                 <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
                 </div>
               )}
               {ordersForDay.length > 0 && (
                 <div className="absolute top-1 right-1">
-                  <span className="text-xs bg-blue-100 text-blue-700 px-1 rounded-full">
+                  <span className="text-xs bg-blue-50 text-blue-600 px-1 rounded-full font-light">
                     {ordersForDay.length}
                   </span>
                 </div>
@@ -134,14 +134,14 @@ const Calendar = ({ selectedDate, onDateSelect, scheduledOrders }) => {
       </div>
 
       {/* Legend */}
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
+      <div className="mt-6 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-center space-x-6 text-xs text-gray-400 font-light">
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+            <div className="w-3 h-3 bg-blue-50 border border-blue-200 rounded"></div>
             <span>Selected</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
             <span>Has Orders</span>
           </div>
         </div>
