@@ -5,6 +5,7 @@ import apiService from '../services/api'
 const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   const { businessSlug } = useParams()
   const [business, setBusiness] = useState(null)
+  const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedService, setSelectedService] = useState(null)
@@ -15,10 +16,11 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
     email: '',
     phone: ''
   })
+  const [sendEmailConfirmation, setSendEmailConfirmation] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [bookingSuccess, setBookingSuccess] = useState(false)
 
-  // Load business data
+  // Load business data and services
   useEffect(() => {
     loadBusiness()
   }, [businessSlug])
@@ -29,6 +31,17 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
       setError(null)
       const businessData = await apiService.getBusinessBySlug(businessSlug)
       setBusiness(businessData)
+      
+      // Load services for this business
+      if (businessData?.id) {
+        try {
+          const servicesData = await apiService.getBusinessServices(businessData.id)
+          setServices(servicesData)
+        } catch (servicesError) {
+          console.error('Failed to load services:', servicesError)
+          setServices([])
+        }
+      }
     } catch (error) {
       console.error('Failed to load business:', error)
       setError('Business not found')
@@ -64,6 +77,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
         customer_name: customerInfo.name,
         customer_email: customerInfo.email,
         customer_phone: customerInfo.phone,
+        send_email_confirmation: sendEmailConfirmation,
         status: 'confirmed'
       }
 
@@ -83,6 +97,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
         setSelectedDate('')
         setSelectedTime('')
         setCustomerInfo({ name: '', email: '', phone: '' })
+        setSendEmailConfirmation(true)
         setBookingSuccess(false)
       }, 3000)
       
@@ -133,7 +148,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   return (
     <div className="min-h-screen bg-gray-25">
       {/* Business Header */}
-              <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center">
             <h1 className="text-3xl font-light text-gray-900 mb-2">{business.name}</h1>
@@ -141,7 +156,6 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
             <div className="flex items-center justify-center space-x-6 text-sm text-gray-500 font-light">
               <span>{business.address}</span>
               <span>{business.phone}</span>
-              <span>{business.hours}</span>
             </div>
           </div>
         </div>
@@ -168,28 +182,35 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
             {/* Service Selection */}
             <div>
               <label className="block text-sm font-light text-gray-700 mb-3">Select Service</label>
-              <div className="grid gap-3">
-                {business.services.map(service => (
-                  <button
-                    key={service.name}
-                    type="button"
-                    onClick={() => setSelectedService(service)}
-                    className={`p-4 rounded-lg border text-left transition-colors ${
-                      selectedService?.name === service.name
-                        ? 'border-blue-200 bg-blue-25'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h4 className="text-sm font-light text-gray-900">{service.name}</h4>
-                        <p className="text-xs text-gray-500">{service.duration} minutes</p>
+              {services.length > 0 ? (
+                <div className="grid gap-3">
+                  {services.map(service => (
+                    <button
+                      key={service.id}
+                      type="button"
+                      onClick={() => setSelectedService(service)}
+                      className={`p-4 rounded-lg border text-left transition-colors ${
+                        selectedService?.id === service.id
+                          ? 'border-blue-200 bg-blue-25'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h4 className="text-sm font-light text-gray-900">{service.name}</h4>
+                          <p className="text-xs text-gray-500">{service.duration} minutes</p>
+                        </div>
+                        <span className="text-sm font-light text-gray-900">${service.price}</span>
                       </div>
-                      <span className="text-sm font-light text-gray-900">${service.price}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>No services available at this time.</p>
+                  <p className="text-sm">Please contact the business directly.</p>
+                </div>
+              )}
             </div>
 
             {/* Date and Time Selection */}
@@ -252,6 +273,21 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                   disabled={submitting}
                 />
               </div>
+            </div>
+
+            {/* Email Confirmation Checkbox */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="sendEmailConfirmation"
+                checked={sendEmailConfirmation}
+                onChange={(e) => setSendEmailConfirmation(e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                disabled={submitting}
+              />
+              <label htmlFor="sendEmailConfirmation" className="ml-2 block text-sm text-gray-700 font-light">
+                Send me my appointment details via email
+              </label>
             </div>
 
             {/* Selected Service Summary */}
