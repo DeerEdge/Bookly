@@ -18,7 +18,11 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
 
   const getAppointmentsForDate = (date) => {
     const dateString = formatDate(date);
-    return appointments.filter(appointment => formatDate(new Date(appointment.date)) === dateString);
+    return appointments.filter(appointment => {
+      // Handle both old and new data structure
+      const appointmentDate = appointment.appointment_date || appointment.date;
+      return formatDate(new Date(appointmentDate)) === dateString;
+    });
   };
 
   const getDaysInMonth = (date) => {
@@ -147,6 +151,20 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  // Helper function to get appointment data with fallbacks
+  const getAppointmentData = (appointment) => {
+    return {
+      id: appointment.id,
+      customer_name: appointment.customers?.name || appointment.customer_name,
+      customer_email: appointment.customers?.email || appointment.customer_email,
+      service_name: appointment.services?.name || appointment.service_name,
+      service_price: appointment.services?.price || appointment.service_price,
+      date: appointment.appointment_date || appointment.date,
+      time: appointment.appointment_time || appointment.time,
+      status: appointment.status
+    };
   };
 
   const renderCalendarDays = () => {
@@ -318,6 +336,7 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
           ) : (
             <div className="space-y-3">
               {selectedAppointments
+                .map(getAppointmentData)
                 .sort((a, b) => a.time.localeCompare(b.time))
                 .map(appointment => (
                   <div key={appointment.id} className="p-4 bg-gray-25 rounded-lg border border-gray-200">
@@ -348,6 +367,7 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
         {(() => {
           const now = new Date()
           const upcoming = appointments
+            .map(getAppointmentData)
             .filter(apt => new Date(`${apt.date}T${apt.time}`) > now)
             .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
             .slice(0, 10)

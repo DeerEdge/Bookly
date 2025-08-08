@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import apiService from '../services/api'
 
 const BusinessProfile = ({ business, onUpdateProfile }) => {
   const [isEditing, setIsEditing] = useState(false)
@@ -9,16 +10,31 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
     description: business?.description || '',
     address: business?.address || '',
     phone: business?.phone || '',
-    hours: business?.hours || '',
-    email: business?.email || '',
-    services: business?.services || []
+    email: business?.email || ''
   })
 
+  const [services, setServices] = useState([])
   const [newService, setNewService] = useState({
     name: '',
     duration: '',
     price: ''
   })
+
+  // Load services for the business
+  useEffect(() => {
+    if (business?.id) {
+      loadServices()
+    }
+  }, [business?.id])
+
+  const loadServices = async () => {
+    try {
+      const servicesData = await apiService.getBusinessServices(business.id)
+      setServices(servicesData)
+    } catch (error) {
+      console.error('Failed to load services:', error)
+    }
+  }
 
   // Update local state when business prop changes (but only if not editing)
   useEffect(() => {
@@ -29,9 +45,7 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
         description: business.description || '',
         address: business.address || '',
         phone: business.phone || '',
-        hours: business.hours || '',
-        email: business.email || '',
-        services: business.services || []
+        email: business.email || ''
       })
     }
   }, [business, isEditing])
@@ -44,51 +58,67 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
   }
 
   const handleServiceChange = (index, field, value) => {
-    const updatedServices = [...businessData.services]
+    const updatedServices = [...services]
     updatedServices[index] = {
       ...updatedServices[index],
       [field]: field === 'duration' || field === 'price' ? Number(value) : value
     }
-    setBusinessData(prev => ({
-      ...prev,
-      services: updatedServices
-    }))
+    setServices(updatedServices)
   }
 
-  const addService = () => {
+  const addService = async () => {
     if (newService.name && newService.duration && newService.price) {
-      setBusinessData(prev => ({
-        ...prev,
-        services: [...prev.services, {
+      try {
+        const serviceData = {
+          business_id: business.id,
           name: newService.name,
+          description: `Professional ${newService.name} service`,
           duration: Number(newService.duration),
           price: Number(newService.price)
-        }]
-      }))
-      setNewService({ name: '', duration: '', price: '' })
+        }
+        
+        await apiService.createService(serviceData)
+        setNewService({ name: '', duration: '', price: '' })
+        loadServices() // Reload services
+      } catch (error) {
+        console.error('Failed to add service:', error)
+        alert('Failed to add service. Please try again.')
+      }
     }
   }
 
-  const removeService = (index) => {
-    setBusinessData(prev => ({
-      ...prev,
-      services: prev.services.filter((_, i) => i !== index)
-    }))
+  const removeService = async (serviceId) => {
+    try {
+      await apiService.deleteService(serviceId)
+      loadServices() // Reload services
+    } catch (error) {
+      console.error('Failed to remove service:', error)
+      alert('Failed to remove service. Please try again.')
+    }
+  }
+
+  const updateService = async (serviceId, updates) => {
+    try {
+      await apiService.updateService(serviceId, updates)
+      loadServices() // Reload services
+    } catch (error) {
+      console.error('Failed to update service:', error)
+      alert('Failed to update service. Please try again.')
+    }
   }
 
   const handleSave = async () => {
     try {
       setLoading(true)
       
+      // Update business information (excluding services and hours)
       const updateData = {
         name: businessData.name,
         category: businessData.category,
         description: businessData.description,
         address: businessData.address,
         phone: businessData.phone,
-        hours: businessData.hours,
-        email: businessData.email,
-        services: businessData.services
+        email: businessData.email
       }
       
       await onUpdateProfile(business.id, updateData)
@@ -109,9 +139,7 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
       description: business?.description || '',
       address: business?.address || '',
       phone: business?.phone || '',
-      hours: business?.hours || '',
-      email: business?.email || '',
-      services: business?.services || []
+      email: business?.email || ''
     })
     setNewService({ name: '', duration: '', price: '' })
     setIsEditing(false)
@@ -234,20 +262,6 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
           </div>
 
           <div>
-            <label htmlFor="business-hours" className="block text-xs font-light text-gray-600 mb-2">Business Hours</label>
-            <input
-              id="business-hours"
-              name="business-hours"
-              type="text"
-              value={businessData.hours}
-              onChange={(e) => handleInputChange('hours', e.target.value)}
-              disabled={!isEditing}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400 disabled:bg-gray-50"
-              placeholder="e.g., Mon-Fri: 9AM-7PM, Sat: 10AM-5PM"
-            />
-          </div>
-
-          <div>
             <label htmlFor="business-email" className="block text-xs font-light text-gray-600 mb-2">Email</label>
             <input
               id="business-email"
@@ -272,46 +286,48 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
         </div>
         <div className="p-6 space-y-6">
           {/* Existing Services */}
-          {businessData.services.length > 0 && (
+          {services.length > 0 && (
             <div className="space-y-4">
               <h4 className="text-sm font-light text-gray-900">Current Services</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {businessData.services.map((service, index) => (
-                  <div key={index} className="p-4 bg-gray-25 rounded-lg border border-gray-200">
+                {services.map((service, index) => (
+                  <div key={service.id} className="p-4 bg-gray-25 rounded-lg border border-gray-200">
                     <div className="flex justify-between items-start mb-3">
                       <h5 className="text-sm font-light text-gray-900">{service.name}</h5>
-                      {isEditing && (
-                        <button
-                          onClick={() => removeService(index)}
-                          className="text-red-500 hover:text-red-600 text-xs font-light"
-                        >
-                          Remove
-                        </button>
-                      )}
+                      <button
+                        onClick={() => removeService(service.id)}
+                        className="text-red-500 hover:text-red-600 text-xs font-light"
+                      >
+                        Remove
+                      </button>
                     </div>
                     <div className="space-y-2">
                       <div>
-                        <label htmlFor={`service-duration-${index}`} className="block text-xs font-light text-gray-600 mb-1">Duration (minutes)</label>
+                        <label htmlFor={`service-duration-${service.id}`} className="block text-xs font-light text-gray-600 mb-1">Duration (minutes)</label>
                         <input
-                          id={`service-duration-${index}`}
-                          name={`service-duration-${index}`}
+                          id={`service-duration-${service.id}`}
+                          name={`service-duration-${service.id}`}
                           type="number"
                           value={service.duration}
-                          onChange={(e) => handleServiceChange(index, 'duration', e.target.value)}
-                          disabled={!isEditing}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400 disabled:bg-gray-50"
+                          onChange={(e) => {
+                            const updatedService = { ...service, duration: Number(e.target.value) }
+                            updateService(service.id, updatedService)
+                          }}
+                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
                         />
                       </div>
                       <div>
-                        <label htmlFor={`service-price-${index}`} className="block text-xs font-light text-gray-600 mb-1">Price ($)</label>
+                        <label htmlFor={`service-price-${service.id}`} className="block text-xs font-light text-gray-600 mb-1">Price ($)</label>
                         <input
-                          id={`service-price-${index}`}
-                          name={`service-price-${index}`}
+                          id={`service-price-${service.id}`}
+                          name={`service-price-${service.id}`}
                           type="number"
                           value={service.price}
-                          onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
-                          disabled={!isEditing}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400 disabled:bg-gray-50"
+                          onChange={(e) => {
+                            const updatedService = { ...service, price: Number(e.target.value) }
+                            updateService(service.id, updatedService)
+                          }}
+                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
                         />
                       </div>
                     </div>
@@ -322,62 +338,60 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
           )}
 
           {/* Add New Service */}
-          {isEditing && (
-            <div className="p-4 bg-blue-25 rounded-lg border border-blue-100">
-              <h4 className="text-sm font-light text-gray-900 mb-4">Add New Service</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label htmlFor="new-service-name" className="block text-xs font-light text-gray-600 mb-2">Service Name</label>
-                  <input
-                    id="new-service-name"
-                    name="new-service-name"
-                    type="text"
-                    value={newService.name}
-                    onChange={(e) => setNewService({...newService, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    placeholder="e.g., Haircut, Massage"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="new-service-duration" className="block text-xs font-light text-gray-600 mb-2">Duration (minutes)</label>
-                  <input
-                    id="new-service-duration"
-                    name="new-service-duration"
-                    type="number"
-                    value={newService.duration}
-                    onChange={(e) => setNewService({...newService, duration: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    placeholder="30"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="new-service-price" className="block text-xs font-light text-gray-600 mb-2">Price ($)</label>
-                  <input
-                    id="new-service-price"
-                    name="new-service-price"
-                    type="number"
-                    value={newService.price}
-                    onChange={(e) => setNewService({...newService, price: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                    placeholder="50"
-                  />
-                </div>
+          <div className="p-4 bg-blue-25 rounded-lg border border-blue-100">
+            <h4 className="text-sm font-light text-gray-900 mb-4">Add New Service</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="new-service-name" className="block text-xs font-light text-gray-600 mb-2">Service Name</label>
+                <input
+                  id="new-service-name"
+                  name="new-service-name"
+                  type="text"
+                  value={newService.name}
+                  onChange={(e) => setNewService({...newService, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                  placeholder="e.g., Haircut, Massage"
+                />
               </div>
-              <button
-                onClick={addService}
-                disabled={!newService.name || !newService.duration || !newService.price}
-                className={`mt-4 px-4 py-2 rounded-lg font-light text-sm transition-colors ${
-                  newService.name && newService.duration && newService.price
-                    ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                Add Service
-              </button>
+              <div>
+                <label htmlFor="new-service-duration" className="block text-xs font-light text-gray-600 mb-2">Duration (minutes)</label>
+                <input
+                  id="new-service-duration"
+                  name="new-service-duration"
+                  type="number"
+                  value={newService.duration}
+                  onChange={(e) => setNewService({...newService, duration: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                  placeholder="30"
+                />
+              </div>
+              <div>
+                <label htmlFor="new-service-price" className="block text-xs font-light text-gray-600 mb-2">Price ($)</label>
+                <input
+                  id="new-service-price"
+                  name="new-service-price"
+                  type="number"
+                  value={newService.price}
+                  onChange={(e) => setNewService({...newService, price: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                  placeholder="50"
+                />
+              </div>
             </div>
-          )}
+            <button
+              onClick={addService}
+              disabled={!newService.name || !newService.duration || !newService.price}
+              className={`mt-4 px-4 py-2 rounded-lg font-light text-sm transition-colors ${
+                newService.name && newService.duration && newService.price
+                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              Add Service
+            </button>
+          </div>
 
-          {businessData.services.length === 0 && !isEditing && (
+          {services.length === 0 && (
             <div className="text-center py-8">
               <p className="text-gray-500 font-light">No services added yet</p>
             </div>
@@ -401,16 +415,15 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
               <div className="flex items-center justify-center space-x-6 text-sm text-gray-500 font-light">
                 <span>{businessData.address}</span>
                 <span>{businessData.phone}</span>
-                <span>{businessData.hours}</span>
               </div>
             </div>
             
             <div className="space-y-4">
               <h3 className="text-lg font-light text-gray-900 mb-4">Available Services</h3>
-              {businessData.services.length > 0 ? (
+              {services.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {businessData.services.map((service, index) => (
-                    <div key={index} className="p-4 bg-white rounded-lg border border-gray-200">
+                  {services.map((service) => (
+                    <div key={service.id} className="p-4 bg-white rounded-lg border border-gray-200">
                       <div className="flex justify-between items-center">
                         <div>
                           <h4 className="text-sm font-light text-gray-900">{service.name}</h4>

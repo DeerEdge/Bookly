@@ -6,6 +6,23 @@ const BusinessHistory = ({ appointments, currentUser }) => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [hoveredBar, setHoveredBar] = useState(null)
 
+  // Helper function to get appointment data with fallbacks
+  const getAppointmentData = (appointment) => {
+    return {
+      id: appointment.id,
+      customer_name: appointment.customers?.name || appointment.customer_name,
+      customer_email: appointment.customers?.email || appointment.customer_email,
+      service_name: appointment.services?.name || appointment.service_name,
+      service_price: appointment.services?.price || appointment.service_price,
+      date: appointment.appointment_date || appointment.date,
+      time: appointment.appointment_time || appointment.time,
+      status: appointment.status
+    };
+  };
+
+  // Transform appointments to use consistent data structure
+  const transformedAppointments = appointments?.map(getAppointmentData) || [];
+
   // Calculate analytics
   const analytics = useMemo(() => {
     const now = new Date()
@@ -14,7 +31,7 @@ const BusinessHistory = ({ appointments, currentUser }) => {
     const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1
     const lastYear = currentMonth === 0 ? currentYear - 1 : currentYear
 
-    const allAppointments = appointments || []
+    const allAppointments = transformedAppointments
     const currentMonthAppointments = allAppointments.filter(apt => {
       const aptDate = new Date(apt.date)
       return aptDate.getMonth() === currentMonth && aptDate.getFullYear() === currentYear
@@ -72,11 +89,11 @@ const BusinessHistory = ({ appointments, currentUser }) => {
       serviceBreakdown,
       yearData
     }
-  }, [appointments, selectedYear])
+  }, [transformedAppointments, selectedYear])
 
   // Filter appointments based on selected period and service
   const filteredAppointments = useMemo(() => {
-    let filtered = appointments || []
+    let filtered = transformedAppointments
 
     // Filter by period
     if (selectedPeriod !== 'all') {
@@ -105,10 +122,10 @@ const BusinessHistory = ({ appointments, currentUser }) => {
     }
 
     return filtered
-  }, [appointments, selectedPeriod, selectedService])
+  }, [transformedAppointments, selectedPeriod, selectedService])
 
   const getServices = () => {
-    const services = [...new Set(appointments?.map(apt => apt.service_name) || [])]
+    const services = [...new Set(transformedAppointments.map(apt => apt.service_name))]
     return ['all', ...services]
   }
 
@@ -133,7 +150,7 @@ const BusinessHistory = ({ appointments, currentUser }) => {
 
   // Get available years from appointments
   const getAvailableYears = () => {
-    const years = [...new Set(appointments?.map(apt => new Date(apt.date).getFullYear()) || [])]
+    const years = [...new Set(transformedAppointments.map(apt => new Date(apt.date).getFullYear()))]
     return years.sort((a, b) => b - a) // Sort descending
   }
 
@@ -308,41 +325,41 @@ const BusinessHistory = ({ appointments, currentUser }) => {
               </div>
             ))}
             
-                                  {/* Chart bars */}
-                      <div className="absolute inset-0 grid grid-cols-12 gap-2 items-end h-full" >
-                        {analytics.yearData.map((data, index) => (
-                          <div key={index} className="flex flex-col items-center relative group h-full justify-end">
-                            {/* Hover Tooltip */}
-                            {hoveredBar === index && (
-                              <div className="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-10 whitespace-nowrap">
-                                <div className="font-medium">{data.month} {data.year}</div>
-                                <div className="text-gray-300">{data.appointments} appointments</div>
-                                <div className="text-green-400">{formatCurrency(data.revenue)}</div>
-                              </div>
-                            )}
+            {/* Chart bars */}
+            <div className="absolute inset-0 grid grid-cols-12 gap-2 items-end h-full" >
+              {analytics.yearData.map((data, index) => (
+                <div key={index} className="flex flex-col items-center relative group h-full justify-end">
+                  {/* Hover Tooltip */}
+                  {hoveredBar === index && (
+                    <div className="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg z-10 whitespace-nowrap">
+                      <div className="font-medium">{data.month} {data.year}</div>
+                      <div className="text-gray-300">{data.appointments} appointments</div>
+                      <div className="text-green-400">{formatCurrency(data.revenue)}</div>
+                    </div>
+                  )}
 
-                            {/* Bar */}
-                            <div 
-                              className="w-full bg-blue-500 rounded-t transition-all duration-200 cursor-pointer hover:bg-blue-600 relative"
-                              style={{ 
-                                height: `${Math.max((data.appointments / maxAppointments) * 100, 4)}%`,
-                                minHeight: '4px',
-                                maxHeight: '100%'
-                              }}
-                              onMouseEnter={() => setHoveredBar(index)}
-                              onMouseLeave={() => setHoveredBar(null)}
-                            >
-                              {/* Number on top of bar */}
-                              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-light">
-                                {data.appointments}
-                              </div>
-                            </div>
+                  {/* Bar */}
+                  <div 
+                    className="w-full bg-blue-500 rounded-t transition-all duration-200 cursor-pointer hover:bg-blue-600 relative"
+                    style={{ 
+                      height: `${Math.max((data.appointments / maxAppointments) * 100, 4)}%`,
+                      minHeight: '4px',
+                      maxHeight: '100%'
+                    }}
+                    onMouseEnter={() => setHoveredBar(index)}
+                    onMouseLeave={() => setHoveredBar(null)}
+                  >
+                    {/* Number on top of bar */}
+                    <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 font-light">
+                      {data.appointments}
+                    </div>
+                  </div>
 
-                            {/* Month label */}
-                            <span className="text-xs text-gray-500 mt-3 font-light">{data.month}</span>
-                          </div>
-                        ))}
-                      </div>
+                  {/* Month label */}
+                  <span className="text-xs text-gray-500 mt-3 font-light">{data.month}</span>
+                </div>
+              ))}
+            </div>
           </div>
           
           {/* Chart Legend */}

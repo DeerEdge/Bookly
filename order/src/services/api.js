@@ -85,6 +85,35 @@ class ApiService {
     });
   }
 
+  // Service endpoints
+  async getBusinessServices(businessId) {
+    return this.request(`/services/business/${businessId}`);
+  }
+
+  async getService(serviceId) {
+    return this.request(`/services/${serviceId}`);
+  }
+
+  async createService(serviceData) {
+    return this.request('/services', {
+      method: 'POST',
+      body: JSON.stringify(serviceData),
+    });
+  }
+
+  async updateService(serviceId, updates) {
+    return this.request(`/services/${serviceId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  async deleteService(serviceId) {
+    return this.request(`/services/${serviceId}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Appointment endpoints
   async getBusinessAppointments(businessId) {
     return this.request(`/appointments/business/${businessId}`);

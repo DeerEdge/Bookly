@@ -12,13 +12,29 @@ const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppoin
     alert('URL copied to clipboard!')
   }
 
-  const upcomingAppointments = appointments
+  // Helper function to get appointment data with fallbacks
+  const getAppointmentData = (appointment) => {
+    return {
+      id: appointment.id,
+      customer_name: appointment.customers?.name || appointment.customer_name,
+      customer_email: appointment.customers?.email || appointment.customer_email,
+      service_name: appointment.services?.name || appointment.service_name,
+      service_price: appointment.services?.price || appointment.service_price,
+      date: appointment.appointment_date || appointment.date,
+      time: appointment.appointment_time || appointment.time,
+      status: appointment.status
+    };
+  };
+
+  const businessAppointments = appointments
     .filter(apt => apt.business_id === currentUser.id)
+    .map(getAppointmentData);
+
+  const upcomingAppointments = businessAppointments
     .sort((a, b) => new Date(`${a.date} ${a.time}`) - new Date(`${b.date} ${b.time}`))
     .slice(0, 5)
 
-  const recentAppointments = appointments
-    .filter(apt => apt.business_id === currentUser.id)
+  const recentAppointments = businessAppointments
     .sort((a, b) => new Date(`${b.date} ${b.time}`) - new Date(`${a.date} ${a.time}`))
     .slice(0, 10)
 
@@ -50,16 +66,15 @@ const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppoin
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">Total Appointments</h3>
-          <p className="text-2xl font-light text-gray-900">{appointments.filter(apt => apt.business_id === currentUser.id).length}</p>
+          <p className="text-2xl font-light text-gray-900">{businessAppointments.length}</p>
         </div>
         <div className="bg-white p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">This Month</h3>
           <p className="text-2xl font-light text-gray-900">
-            {appointments.filter(apt => {
+            {businessAppointments.filter(apt => {
               const aptDate = new Date(apt.date)
               const now = new Date()
-              return apt.business_id === currentUser.id && 
-                     aptDate.getMonth() === now.getMonth() && 
+              return aptDate.getMonth() === now.getMonth() && 
                      aptDate.getFullYear() === now.getFullYear()
             }).length}
           </p>
@@ -67,11 +82,10 @@ const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppoin
         <div className="bg-white p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">Today</h3>
           <p className="text-2xl font-light text-gray-900">
-            {appointments.filter(apt => {
+            {businessAppointments.filter(apt => {
               const aptDate = new Date(apt.date)
               const today = new Date()
-              return apt.business_id === currentUser.id && 
-                     aptDate.toDateString() === today.toDateString()
+              return aptDate.toDateString() === today.toDateString()
             }).length}
           </p>
         </div>
