@@ -62,7 +62,7 @@ const AppointmentBooking = ({ businesses, onBookAppointment }) => {
       </div>
 
       {/* Search Section */}
-      <div className="bg-white rounded-lg border border-gray-100 p-6 mb-6">
+              <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-light text-gray-900 mb-4">Search Businesses</h2>
         <input
           type="text"
@@ -79,7 +79,7 @@ const AppointmentBooking = ({ businesses, onBookAppointment }) => {
           {filteredBusinesses.map(business => (
             <div 
               key={business.id}
-              className={`bg-white rounded-lg border border-gray-100 p-6 cursor-pointer transition-colors ${
+              className={`bg-white rounded-lg border border-gray-200 p-6 cursor-pointer transition-colors ${
                 selectedBusiness?.id === business.id 
                   ? 'border-blue-200 bg-blue-25' 
                   : 'hover:border-gray-200'
@@ -107,7 +107,7 @@ const AppointmentBooking = ({ businesses, onBookAppointment }) => {
 
       {/* Booking Form */}
       {selectedBusiness && (
-        <div className="bg-white rounded-lg border border-gray-100 p-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
           <h2 className="text-lg font-light text-gray-900 mb-6">Book Appointment with {selectedBusiness.name}</h2>
           
           <form onSubmit={handleBookAppointment} className="space-y-6">

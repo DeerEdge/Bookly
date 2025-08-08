@@ -68,7 +68,7 @@ const OrderForm = ({ selectedDate, onOrderScheduled }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-100 p-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h2 className="text-lg font-light text-gray-900 mb-6">Schedule Order</h2>
       
       {/* Selected Date Display */}

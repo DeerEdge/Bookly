@@ -1,0 +1,44 @@
+[
+  {
+    "id": "e78d3ed5-97d1-4e09-9bf2-0064b7978b69",
+    "business_id": "419caa8f-9c5e-4474-bc92-1412a46786c1",
+    "business_name": "Zen Massage Therapy",
+    "service_name": "Swedish Massage",
+    "service_price": 80,
+    "date": "2025-08-05",
+    "time": "16:00",
+    "customer_name": "Mike Johnson",
+    "customer_email": "mike@example.com",
+    "customer_phone": "(555) 555-6666",
+    "status": "confirmed",
+    "created_at": "2025-08-05T20:59:11.769914"
+  },
+  {
+    "id": "3f48c035-b36a-4478-8240-b078f29c4b5e",
+    "business_id": "419caa8f-9c5e-4474-bc92-1412a46786c1",
+    "business_name": "Zen Massage Therapy",
+    "service_name": "Deep Tissue",
+    "service_price": 90,
+    "date": "2025-08-12",
+    "time": "11:00",
+    "customer_name": "Lisa Brown",
+    "customer_email": "lisa@example.com",
+    "customer_phone": "(555) 999-0000",
+    "status": "confirmed",
+    "created_at": "2025-08-05T20:59:11.769929"
+  },
+  {
+    "id": "ba2698b0-1e48-473e-b0cc-483ec883e869",
+    "business_id": "419caa8f-9c5e-4474-bc92-1412a46786c1",
+    "business_name": "Zen Massage Therapy",
+    "service_name": "Hot Stone",
+    "service_price": 120,
+    "date": "2025-09-04",
+    "time": "13:00",
+    "customer_name": "David Lee",
+    "customer_email": "david@example.com",
+    "customer_phone": "(555) 111-3333",
+    "status": "confirmed",
+    "created_at": "2025-08-05T20:59:11.769943"
+  }
+]

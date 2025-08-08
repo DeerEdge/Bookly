@@ -84,7 +84,7 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
         <p className="text-gray-500 font-light">Set up your business profile and services</p>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-100 p-6">
+      <div className="bg-white rounded-lg border border-gray-200 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Business Information */}
           <div>
@@ -227,7 +227,7 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
             {services.length > 0 && (
               <div className="space-y-2">
                 {services.map(service => (
-                  <div key={service.id} className="flex items-center justify-between p-3 bg-gray-25 rounded-lg border border-gray-100">
+                  <div key={service.id} className="flex items-center justify-between p-3 bg-gray-25 rounded-lg border border-gray-200">
                     <div>
                       <span className="text-sm font-light text-gray-900">{service.name}</span>
                       <span className="text-xs text-gray-500 ml-2">{service.duration} min</span>

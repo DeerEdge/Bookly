@@ -1,0 +1,16 @@
+[
+  {
+    "id": "bfc17372-5c31-4c08-a58c-5eef2d9299c5",
+    "business_id": "22775255-8bee-4016-8c0b-c5e8712d0f64",
+    "business_name": "Zen Massage Therapy",
+    "service_name": "Swedish Massage",
+    "service_price": 80,
+    "date": "2024-01-15",
+    "time": "16:00",
+    "customer_name": "Mike Johnson",
+    "customer_email": "mike@example.com",
+    "customer_phone": "(555) 555-6666",
+    "status": "confirmed",
+    "created_at": "2025-08-04T16:03:10.661977"
+  }
+]

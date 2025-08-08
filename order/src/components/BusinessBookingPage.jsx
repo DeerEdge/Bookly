@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
+import apiService from '../services/api'
 
 const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   const { businessSlug } = useParams()
+  const [business, setBusiness] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [selectedService, setSelectedService] = useState(null)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
@@ -11,15 +15,29 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
     email: '',
     phone: ''
   })
+  const [submitting, setSubmitting] = useState(false)
+  const [bookingSuccess, setBookingSuccess] = useState(false)
 
-  // Find the business by slug
-  const business = businesses.find(b => b.slug === businessSlug)
+  // Load business data
+  useEffect(() => {
+    loadBusiness()
+  }, [businessSlug])
 
-  if (!business) {
-    return <Navigate to="/admin/login" replace />
+  const loadBusiness = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const businessData = await apiService.getBusinessBySlug(businessSlug)
+      setBusiness(businessData)
+    } catch (error) {
+      console.error('Failed to load business:', error)
+      setError('Business not found')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleBookAppointment = (e) => {
+  const handleBookAppointment = async (e) => {
     e.preventDefault()
     
     if (!selectedService || !selectedDate || !selectedTime) {
@@ -32,27 +50,61 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
       return
     }
 
-    const appointment = {
-      businessId: business.id,
-      businessName: business.name,
-      serviceName: selectedService.name,
-      servicePrice: selectedService.price,
-      date: selectedDate,
-      time: selectedTime,
-      customerName: customerInfo.name,
-      customerEmail: customerInfo.email,
-      customerPhone: customerInfo.phone
-    }
+    try {
+      setSubmitting(true)
+      setBookingSuccess(false)
+      
+      const appointment = {
+        business_id: business.id,
+        business_name: business.name,
+        service_name: selectedService.name,
+        service_price: selectedService.price,
+        date: selectedDate,
+        time: selectedTime,
+        customer_name: customerInfo.name,
+        customer_email: customerInfo.email,
+        customer_phone: customerInfo.phone,
+        status: 'confirmed'
+      }
 
-    onBookAppointment(appointment)
-    
-    // Reset form
-    setSelectedService(null)
-    setSelectedDate('')
-    setSelectedTime('')
-    setCustomerInfo({ name: '', email: '', phone: '' })
-    
-    alert('Appointment booked successfully!')
+      console.log('Submitting appointment:', appointment)
+      console.log('Business ID:', business.id)
+      console.log('Business data:', business)
+      
+      const result = await onBookAppointment(appointment)
+      console.log('Appointment booking result:', result)
+      
+      // Show success message
+      setBookingSuccess(true)
+      
+      // Reset form after a short delay
+      setTimeout(() => {
+        setSelectedService(null)
+        setSelectedDate('')
+        setSelectedTime('')
+        setCustomerInfo({ name: '', email: '', phone: '' })
+        setBookingSuccess(false)
+      }, 3000)
+      
+    } catch (error) {
+      console.error('Failed to book appointment:', error)
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        business: business,
+        appointment: {
+          business_id: business?.id,
+          service_name: selectedService?.name,
+          date: selectedDate,
+          time: selectedTime,
+          customer_name: customerInfo.name,
+          customer_email: customerInfo.email
+        }
+      })
+      alert(`Failed to book appointment: ${error.message}`)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const formatTime = (time) => {
@@ -63,10 +115,25 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
     })
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-25 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-light">Loading business...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !business) {
+    return <Navigate to="/manage/login" replace />
+  }
+
   return (
     <div className="min-h-screen bg-gray-25">
       {/* Business Header */}
-      <div className="bg-white border-b border-gray-100">
+              <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center">
             <h1 className="text-3xl font-light text-gray-900 mb-2">{business.name}</h1>
@@ -82,8 +149,20 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
 
       {/* Booking Form */}
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg border border-gray-100 p-8">
+        <div className="bg-white rounded-lg border border-gray-200 p-8">
           <h2 className="text-2xl font-light text-gray-900 mb-6 text-center">Book Your Appointment</h2>
+          
+          {/* Success Message */}
+          {bookingSuccess && (
+            <div className="mb-6 p-4 bg-green-25 border border-green-200 rounded-lg">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-green-800 font-light">Appointment booked successfully! You will receive a confirmation email shortly.</p>
+              </div>
+            </div>
+          )}
           
           <form onSubmit={handleBookAppointment} className="space-y-6">
             {/* Service Selection */}
@@ -123,6 +202,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                   onChange={(e) => setSelectedDate(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
+                  disabled={submitting}
                 />
               </div>
               <div>
@@ -132,6 +212,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
+                  disabled={submitting}
                 />
               </div>
             </div>
@@ -146,6 +227,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                   onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
                   placeholder="Your full name"
+                  disabled={submitting}
                 />
               </div>
               <div>
@@ -156,6 +238,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                   onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
                   placeholder="your@email.com"
+                  disabled={submitting}
                 />
               </div>
               <div>
@@ -166,6 +249,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                   onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
                   placeholder="(555) 123-4567"
+                  disabled={submitting}
                 />
               </div>
             </div>
@@ -187,16 +271,16 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={!selectedService || !selectedDate || !selectedTime}
+              disabled={!selectedService || !selectedDate || !selectedTime || submitting}
               className={`
                 w-full py-3 px-4 rounded-lg font-light transition-colors text-sm
-                ${selectedService && selectedDate && selectedTime
+                ${selectedService && selectedDate && selectedTime && !submitting
                   ? 'bg-blue-500 hover:bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 }
               `}
             >
-              Book Appointment
+              {submitting ? 'Booking Appointment...' : 'Book Appointment'}
             </button>
           </form>
         </div>
