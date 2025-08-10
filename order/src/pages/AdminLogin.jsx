@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import Login from '../components/Login'
+import Login from './Login'
 
 const AdminLogin = ({ 
   isAuthenticated, 

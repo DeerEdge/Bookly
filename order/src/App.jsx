@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import BusinessManagement from './pages/BusinessManagement'
 import AdminLogin from './pages/AdminLogin'
 import LoadingPage from './pages/LoadingPage'
+import LandingPage from './pages/LandingPage'
+import FindServicePage from './pages/FindServicePage'
+import BusinessPricingPage from './pages/BusinessPricingPage'
 import BusinessBookingPage from './components/BusinessBookingPage'
 import apiService from './services/api'
 
@@ -172,8 +175,12 @@ function App() {
           }
         />
 
-        {/* Default route - redirect to business login */}
-        <Route path="/" element={<Navigate to="/manage/login" replace />} />
+        {/* Public Page Routes */}
+        <Route path="/find-service" element={<FindServicePage />} />
+        <Route path="/business-pricing" element={<BusinessPricingPage />} />
+
+        {/* Default route - show landing page */}
+        <Route path="/" element={<LandingPage />} />
       </Routes>
     </Router>
   )

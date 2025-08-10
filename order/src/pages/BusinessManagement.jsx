@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import BusinessDashboard from '../components/BusinessDashboard'
+import BusinessDashboard from './BusinessDashboard'
 import BusinessCalendar from '../components/BusinessCalendar'
-import BusinessHistory from '../components/BusinessHistory'
-import BusinessProfile from '../components/BusinessProfile'
+import BusinessHistory from './BusinessHistory'
+import BusinessProfile from './BusinessProfile'
+import BusinessRegistration from './BusinessRegistration'
 
 const BusinessManagement = ({ 
   isAuthenticated, 

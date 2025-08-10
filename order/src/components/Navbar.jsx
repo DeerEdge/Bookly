@@ -1,18 +1,53 @@
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
-const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin }) => {
+const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPublic }) => {
+  const navigate = useNavigate()
+
+  const handlePublicTabClick = (tab) => {
+    if (isPublic) {
+      navigate(`/${tab}`)
+    } else if (setActiveTab) {
+      setActiveTab(tab)
+    }
+  }
+
+  const handleLogoClick = (e) => {
+    // If user is logged in (either admin or regular user), prevent navigation to landing page
+    if (currentUser || isAdmin) {
+      e.preventDefault()
+      // Optionally, you can navigate to a dashboard or do nothing
+      // For now, we'll just prevent the navigation
+      return
+    }
+    // If not logged in, allow normal navigation to landing page
+  }
+
   return (
     <nav className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-xl font-light text-gray-900">Bookly</h1>
-            </div>
-            <div className="ml-4 text-sm text-gray-500 font-light">
-              {currentUser ? `Welcome, ${currentUser.name}` : 'Easy appointment booking for businesses'}
-            </div>
+              <Link 
+                to={currentUser || isAdmin ? "#" : "/"} 
+                onClick={handleLogoClick}
+                className={`text-2xl text-gray-900 tracking-tight ${currentUser || isAdmin ? 'cursor-default' : 'cursor-pointer'}`}
+              >
+                  <motion.span
+                    whileHover={{ 
+                      textShadow: currentUser || isAdmin ? "none" : "0 0 30px rgba(59, 130, 246, 0.8)"
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    Bookly
+                  </motion.span>
+                </Link>
+            
           </div>
 
           {/* Navigation Tabs */}
@@ -100,6 +135,40 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin }) => 
                   `}
                 >
                   Register Business
+                </button>
+              </>
+            ) : isPublic ? (
+              <>
+                <button
+                  onClick={() => handlePublicTabClick('find-service')}
+                  className={`
+                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                    ${activeTab === 'find-service'
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                    }
+                  `}
+                >
+                  Find a Service
+                </button>
+                <button
+                  onClick={() => handlePublicTabClick('business-pricing')}
+                  className={`
+                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                    ${activeTab === 'business-pricing'
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                    }
+                  `}
+                >
+                  Business Pricing
+                </button>
+                <div className="ml-2 mr-3 border-l border-gray-200 h-7"></div>
+                <button
+                  onClick={() => navigate('/manage/login')}
+                  className="px-4 py-2 text-sm font-light bg-gray-800 hover:bg-gray-900 text-white rounded-md transition-colors duration-200"
+                >
+                  Sign In
                 </button>
               </>
             ) : null}
