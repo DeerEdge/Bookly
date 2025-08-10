@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+.swirl-bg-hero {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200vw;
+  height: 200vw;
+  max-width: none;
+  max-height: none;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  border-radius: 50%;
+background: conic-gradient(
+  from 0deg,
+  #60a5fa 0%,
+  #93c5fd 20%,
+  #bae6fd 40%,
+  #7dd3fc 60%,
+  #38bdf8 80%,
+  #60a5fa 100%
+);
+  animation: swirl 10s linear infinite;
+  opacity: 0.95; /* More visible */
+  filter: blur(40px) saturate(1.7); /* Less blur, more color */
+  pointer-events: none;
+}
+
+@keyframes swirl {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

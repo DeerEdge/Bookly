@@ -256,18 +256,23 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                           key={service.id}
                           type="button"
                           onClick={() => setSelectedService(service)}
-                          className={`p-4 rounded-lg border text-left transition-colors ${
-                            selectedService?.id === service.id
-                              ? 'border-blue-200 bg-blue-25'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
+                          className={`p-5 rounded-xl border-2 text-left transition-colors duration-150 shadow-sm
+                            ${selectedService?.id === service.id
+                              ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-300 font-semibold text-blue-900'
+                              : 'border-gray-200 hover:border-blue-300 hover:bg-blue-25'
+                            }`}
+                          style={{ boxShadow: selectedService?.id === service.id ? '0 4px 24px 0 rgba(59,130,246,0.10)' : undefined }}
                         >
                           <div className="flex justify-between items-center">
                             <div>
-                              <h4 className="text-sm font-light text-gray-900">{service.name}</h4>
+                              <h4 className={`text-base ${selectedService?.id === service.id ? 'font-semibold' : 'font-light'} text-gray-900`}>
+                                {service.name}
+                              </h4>
                               <p className="text-xs text-gray-500">{service.duration} minutes</p>
                             </div>
-                            <span className="text-sm font-light text-gray-900">${service.price}</span>
+                            <span className={`text-lg ${selectedService?.id === service.id ? 'font-semibold text-blue-700' : 'font-light text-gray-900'}`}>
+                              ${service.price}
+                            </span>
                           </div>
                         </button>
                       ))}

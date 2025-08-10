@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
+
 const LandingPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -114,21 +115,22 @@ const LandingPage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <Navbar 
-        isPublic={true}
-      />
+    return (
+        <div className="min-h-screen bg-white relative">
+          {/* Navigation */}
+          <Navbar isPublic={true} className="bg-transparent shadow-none" />
 
       {/* Hero Section */}
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center"
+        className="relative min-h-screen flex items-center overflow-hidden"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full">
+        {/* Siri-like Swirl Background for Hero */}
+        <div className="swirl-bg-hero pointer-events-none"></div>
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full relative z-10">
           <motion.h1 
             className="text-5xl md:text-6xl text-gray-900 mb-8 tracking-tight leading-tight"
             variants={textVariants}
@@ -138,7 +140,7 @@ const LandingPage = () => {
           </motion.h1>
           
           <motion.p 
-            className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-white mb-12 max-w-3xl mx-auto leading-relaxed"
             variants={textVariants}
           >
             Discover amazing businesses, book appointments instantly, and manage your schedule with ease. 
@@ -329,5 +331,6 @@ const LandingPage = () => {
     </div>
   )
 }
+
 
 export default LandingPage
