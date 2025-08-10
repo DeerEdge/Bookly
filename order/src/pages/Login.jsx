@@ -108,22 +108,22 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/" className="text-2xl text-gray-900 tracking-tight">
-                  <motion.span
-                    whileHover={{ 
-                      textShadow: "0 0 30px rgba(59, 130, 246, 0.8)"
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    Bookly
-                  </motion.span>
-                </Link>
-              </div>
+                <motion.span
+                  whileHover={{ 
+                    textShadow: "0 0 30px rgba(59, 130, 246, 0.8)"
+                  }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeInOut"
+                  }}
+                >
+                  Bookly
+                </motion.span>
+              </Link>
             </div>
           </div>
-        </nav>
+        </div>
+      </nav>
 
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full">

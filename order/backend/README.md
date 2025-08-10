@@ -6,17 +6,12 @@ A Python Flask backend for the Bookly platform with JSON file storage.
 
 ### 1. Install Dependencies
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-### 2. Initialize Sample Data
+### 2. Start the Server
 ```bash
-python init_sample_data.py
-```
-
-### 3. Start the Server
-```bash
-python app.py
+python3 app.py
 ```
 
 The server will start on `http://localhost:3001`
@@ -32,7 +27,6 @@ backend/
 │   ├── businesses.py       # Business management routes
 │   └── appointments.py     # Appointment management routes
 ├── app.py                  # Main Flask application
-├── init_sample_data.py     # Sample data initialization
 ├── requirements.txt        # Python dependencies
 └── README.md
 ```
@@ -76,7 +70,7 @@ appointments-{business_id}.json
 
 ### Start Development Server
 ```bash
-python app.py
+python3 app.py
 ```
 
 ### Environment Variables
@@ -85,17 +79,6 @@ Create a `.env` file for environment variables:
 FLASK_ENV=development
 FLASK_DEBUG=1
 ```
-
-## 📝 Sample Data
-
-The initialization script creates:
-- 2 sample businesses (Elegant Hair Salon, Zen Massage Therapy)
-- 3 sample appointments
-- Demo credentials for testing
-
-### Demo Credentials
-- **Elegant Hair Salon:** `elegant@example.com` / `password123`
-- **Zen Massage Therapy:** `zen@example.com` / `password123`
 
 ## 🔄 Future Migration to Supabase
 
@@ -126,6 +109,6 @@ For production deployment:
 
 ```bash
 # Production example
-pip install gunicorn
+pip3 install gunicorn
 gunicorn -w 4 -b 0.0.0.0:3001 app:app
 ``` 

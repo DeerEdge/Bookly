@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import BLogo from '../assets/B.png'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -30,11 +31,11 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mr-3">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
+              <img 
+                src={BLogo} 
+                alt="Bookly" 
+                className="w-10 h-10 mr-3"
+              />
               <h3 className="text-2xl font-semibold">Bookly</h3>
             </div>
             <p className="text-gray-300 text-lg leading-relaxed mb-4 max-w-md">
