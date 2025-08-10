@@ -315,7 +315,7 @@ const LandingPage = () => {
           </motion.p>
           <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" variants={itemVariants}>
             <Link
-              to="/find-service"
+              to="/manage/login"
               className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-light text-lg transition-colors duration-200 shadow-sm hover:shadow-md"
             >
               Register your Business
