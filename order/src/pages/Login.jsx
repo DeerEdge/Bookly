@@ -11,6 +11,50 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Animation variants for smooth form appearance
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20,
+      scale: 0.95
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  }
+
+  const headerVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: -20 
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  }
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -69,30 +113,46 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
 
         <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md w-full">
-            <div className="text-center mb-8">
+            <motion.div 
+              className="text-center mb-8"
+              variants={headerVariants}
+              initial="hidden"
+              animate="visible"
+            >
               <h2 className="text-3xl font-light text-gray-900 mb-2">Bookly</h2>
               <p className="text-gray-500 font-light">Register your business</p>
-            </div>
+            </motion.div>
             
-            <BusinessRegistration 
-              onBusinessRegistered={async (business) => {
-                try {
-                  await onBusinessRegistered(business)
-                  setActiveTab('login')
-                } catch (error) {
-                  console.error('Registration failed:', error)
-                }
-              }}
-            />
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <BusinessRegistration 
+                onBusinessRegistered={async (business) => {
+                  try {
+                    await onBusinessRegistered(business)
+                    setActiveTab('login')
+                  } catch (error) {
+                    console.error('Registration failed:', error)
+                  }
+                }}
+              />
+            </motion.div>
             
-            <div className="text-center mt-6">
+            <motion.div 
+              className="text-center mt-6"
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+            >
               <button
                 onClick={() => setActiveTab('login')}
                 className="text-sm text-blue-600 hover:text-blue-500 font-light"
               >
                 Already have an account? Sign in
               </button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -127,20 +187,33 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
 
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full">
-          <div className="text-center mb-8">
+          <motion.div 
+            className="text-center mb-8"
+            variants={headerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <h2 className="text-3xl font-light text-gray-900 mb-2">Bookly</h2>
             <p className="text-gray-500 font-light">Sign in to your business account</p>
-          </div>
+          </motion.div>
 
-          <div className="bg-white rounded-lg border border-gray-200 p-8">
+          <motion.div 
+            className="bg-white rounded-lg border border-gray-200 p-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             <form onSubmit={handleLoginSubmit} className="space-y-6">
               {error && (
-                <div className="bg-red-25 border border-red-200 rounded-lg p-3">
+                <motion.div 
+                  className="bg-red-25 border border-red-200 rounded-lg p-3"
+                  variants={itemVariants}
+                >
                   <p className="text-sm text-red-600 font-light">{error}</p>
-                </div>
+                </motion.div>
               )}
 
-              <div>
+              <motion.div variants={itemVariants}>
                 <label className="block text-xs font-light text-gray-600 mb-2">
                   Email Address
                 </label>
@@ -152,9 +225,9 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
                   placeholder="Enter your email"
                   disabled={loading}
                 />
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div variants={itemVariants}>
                 <label className="block text-xs font-light text-gray-600 mb-2">
                   Password
                 </label>
@@ -166,9 +239,9 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
                   placeholder="Enter your password"
                   disabled={loading}
                 />
-              </div>
+              </motion.div>
 
-              <button
+              <motion.button
                 type="submit"
                 disabled={loading}
                 className={`
@@ -178,12 +251,20 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
                     : 'bg-blue-500 hover:bg-blue-600 text-white'
                   }
                 `}
+                variants={itemVariants}
+                whileHover={{ 
+                  scale: loading ? 1 : 1.02,
+                  transition: { duration: 0.2 }
+                }}
               >
                 {loading ? 'Signing In...' : 'Sign In'}
-              </button>
+              </motion.button>
             </form>
 
-            <div className="mt-6 text-center">
+            <motion.div 
+              className="mt-6 text-center"
+              variants={itemVariants}
+            >
               <button
                 onClick={() => setActiveTab('register')}
                 className="text-sm text-blue-600 hover:text-blue-500 font-light"
@@ -191,17 +272,20 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
               >
                 Don't have an account? Register your business
               </button>
-            </div>
+            </motion.div>
 
             {/* Demo Credentials */}
-            <div className="mt-8 p-4 bg-gray-25 rounded-lg border border-gray-200">
+            <motion.div 
+              className="mt-8 p-4 bg-gray-25 rounded-lg border border-gray-200"
+              variants={itemVariants}
+            >
               <h3 className="text-sm font-light text-gray-900 mb-2">Demo Credentials</h3>
               <div className="space-y-1 text-xs text-gray-600 font-light">
                 <p><strong>Elegant Hair Salon:</strong> elegant@example.com / password123</p>
                 <p><strong>Zen Massage Therapy:</strong> zen@example.com / password123</p>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </div>
