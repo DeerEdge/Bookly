@@ -58,6 +58,10 @@ class ApiService {
     return this.request(`/businesses/slug/${slug}`);
   }
 
+  async getBusiness(businessId) {
+    return this.request(`/businesses/${businessId}`);
+  }
+
   async registerBusiness(businessData) {
     return this.request('/businesses/register', {
       method: 'POST',

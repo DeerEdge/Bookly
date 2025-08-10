@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppointments }) => {
   const [selectedBusiness, setSelectedBusiness] = useState(null)
+  const [showSharePopup, setShowSharePopup] = useState(false)
 
   const getBusinessUrl = (business) => {
     return `${window.location.origin}/${business.slug}`
@@ -54,6 +55,12 @@ const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppoin
             View Customer Page
           </button>
           <button
+            onClick={() => setShowSharePopup(true)}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-light text-sm transition-colors"
+          >
+            Share Links
+          </button>
+          <button
             onClick={() => copyToClipboard(getBusinessUrl(currentUser))}
             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-light text-sm transition-colors"
           >
@@ -61,6 +68,81 @@ const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppoin
           </button>
         </div>
       </div>
+
+      {/* Share Links Popup */}
+      {showSharePopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-light text-gray-900">Share Your Business</h2>
+              <button
+                onClick={() => setShowSharePopup(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl font-light"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="text-center">
+              <h3 className="text-lg font-light text-gray-900 mb-4">Your Customer Booking Page</h3>
+              
+              {/* QR Code Display */}
+              {currentUser.qr_code_url ? (
+                <div className="border-2 border-gray-200 rounded-lg p-4 bg-white mb-6">
+                  <img
+                    src={currentUser.qr_code_url}
+                    alt="Business QR Code"
+                    className="w-48 h-48 mx-auto"
+                  />
+                </div>
+              ) : (
+                <div className="border-2 border-gray-200 rounded-lg p-4 bg-gray-50 mb-6">
+                  <div className="w-48 h-48 mx-auto flex items-center justify-center">
+                    <p className="text-gray-500 text-sm">QR Code not available</p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Booking URL */}
+              <p className="text-sm font-mono text-blue-600 break-all mb-4 bg-gray-50 p-3 rounded-lg">
+                {getBusinessUrl(currentUser)}
+              </p>
+              
+              <p className="text-sm text-gray-600 mb-6">
+                Share this URL with your customers so they can book appointments directly
+              </p>
+              
+              {/* Action Buttons */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => copyToClipboard(getBusinessUrl(currentUser))}
+                  className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-light text-sm transition-colors"
+                >
+                  Copy
+                </button>
+                <button
+                  onClick={() => window.open(getBusinessUrl(currentUser), '_blank')}
+                  className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-light text-sm transition-colors"
+                >
+                  View
+                </button>
+              </div>
+              
+              {/* QR Code Actions */}
+              {currentUser.qr_code_url && (
+                <div className="mt-4">
+                  <button
+                    onClick={() => window.open(currentUser.qr_code_url, '_blank')}
+                    className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-light text-sm transition-colors"
+                  >
+                    View Full Size QR Code
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -93,34 +175,6 @@ const BusinessDashboard = ({ businesses, appointments, currentUser, onLoadAppoin
           <h3 className="text-sm font-light text-gray-500 mb-2">Services</h3>
           <p className="text-2xl font-light text-gray-900">{currentUser.services?.length || 0}</p>
         </div>
-      </div>
-
-      {/* Customer Page URL */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-light text-gray-900 mb-4">Your Customer Booking Page</h3>
-        <div className="flex items-center space-x-3">
-          <input
-            type="text"
-            value={getBusinessUrl(currentUser)}
-            readOnly
-            className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-light bg-gray-50"
-          />
-          <button
-            onClick={() => copyToClipboard(getBusinessUrl(currentUser))}
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-light text-sm transition-colors"
-          >
-            Copy
-          </button>
-          <button
-            onClick={() => window.open(getBusinessUrl(currentUser), '_blank')}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-light text-sm transition-colors"
-          >
-            View
-          </button>
-        </div>
-        <p className="text-xs text-gray-500 mt-2 font-light">
-          Share this URL with your customers so they can book appointments directly
-        </p>
       </div>
 
       {/* Upcoming Appointments */}

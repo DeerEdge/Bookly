@@ -35,10 +35,25 @@ function App() {
       const business = await apiService.loginBusiness(email, password)
       setCurrentUser(business)
       setIsAuthenticated(true)
+      
+      // Refresh the business data to ensure we have the latest information
+      await refreshCurrentUserData(business.id)
+      
       return true
     } catch (error) {
       console.error('Login failed:', error)
       return false
+    }
+  }
+
+  const refreshCurrentUserData = async (businessId) => {
+    try {
+      const updatedBusiness = await apiService.getBusiness(businessId)
+      setCurrentUser(updatedBusiness)
+      // Also update the businesses array
+      setBusinesses(prev => prev.map(b => b.id === businessId ? updatedBusiness : b))
+    } catch (error) {
+      console.error('Failed to refresh user data:', error)
     }
   }
 
