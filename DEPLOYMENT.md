@@ -3,35 +3,42 @@
 ## Frontend (Netlify) - ✅ Done
 Your React app is already deployed to Netlify.
 
-## Backend (Railway) - 🚧 In Progress
+## Backend (Render) - 🚧 Ready for Deployment
 
-### Step 1: Deploy to Railway
-1. Go to [Railway.app](https://railway.app)
-2. Sign up/login with GitHub
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your `OrderAgain` repository
-5. Set **Root Directory** to `order/backend`
-6. Railway will auto-detect Python and deploy
+### Step 1: Deploy to Render
+1. **Go to [Render.com](https://render.com)** and sign up/login with GitHub
+2. **Click "New +"** → "Web Service"
+3. **Connect your GitHub repository** (OrderAgain)
+4. **Configure the service:**
+   - **Name:** `orderagain-backend`
+   - **Root Directory:** `order/backend`
+   - **Environment:** `Python 3`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app:app`
+   - **Instance Type:** Free tier is fine for testing
 
-### Step 2: Configure Environment Variables in Railway
-Add these in Railway's dashboard under "Variables":
+### Step 2: Configure Environment Variables in Render
+In Render's service dashboard, add these environment variables:
 ```
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_KEY=your_supabase_anon_key
-PORT=8080
+FLASK_ENV=production
 ```
 
 ### Step 3: Update Netlify Environment Variables
 In Netlify site settings → Environment variables, add:
 ```
-VITE_API_BASE_URL=https://your-railway-app-name.railway.app/api
+VITE_API_BASE_URL=https://your-render-service-name.onrender.com/api
 ```
 
 ### Step 4: Redeploy Frontend
 After setting the environment variable, trigger a new Netlify deployment to pick up the API URL.
 
-## Alternative: Use Supabase Edge Functions
-If you prefer serverless, you could migrate the Flask API to Supabase Edge Functions.
+## Files Created for Render:
+- ✅ `render.yaml` - Optional configuration file
+- ✅ `requirements.txt` - Updated with gunicorn
+- ✅ CORS configured for Netlify domains
+- ✅ Port configuration for Render
 
 ## Local Development
 Create `order/.env.local`:

@@ -18,12 +18,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-# Configure CORS to allow requests from Netlify and localhost
+# Configure CORS to allow requests from Netlify, Render, and localhost
 CORS(app, origins=[
     "http://localhost:5173",  # Vite dev server
     "http://localhost:3000",  # Alternative dev server
     "https://*.netlify.app",  # Netlify domains
-    "https://*.netlify.com"   # Netlify custom domains
+    "https://*.netlify.com",  # Netlify custom domains
+    "https://*.onrender.com"  # Render domains
 ])
 
 # Configure Flask to handle trailing slashes
