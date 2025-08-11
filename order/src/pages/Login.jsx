@@ -273,18 +273,6 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
                 Don't have an account? Register your business
               </button>
             </motion.div>
-
-            {/* Demo Credentials */}
-            <motion.div 
-              className="mt-8 p-4 bg-gray-25 rounded-lg border border-gray-200"
-              variants={itemVariants}
-            >
-              <h3 className="text-sm font-light text-gray-900 mb-2">Demo Credentials</h3>
-              <div className="space-y-1 text-xs text-gray-600 font-light">
-                <p><strong>Elegant Hair Salon:</strong> elegant@example.com / password123</p>
-                <p><strong>Zen Massage Therapy:</strong> zen@example.com / password123</p>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
       </div>
