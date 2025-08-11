@@ -2,9 +2,9 @@
   "name": "orderagain",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd order && npm run build",
+    "build": "cd order && npm ci && npm run build",
     "dev": "cd order && npm run dev",
-    "install-deps": "cd order && npm install"
+    "install": "cd order && npm install"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11"
