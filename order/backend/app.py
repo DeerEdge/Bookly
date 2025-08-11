@@ -18,7 +18,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
+# Configure CORS to allow requests from Netlify and localhost
+CORS(app, origins=[
+    "http://localhost:5173",  # Vite dev server
+    "http://localhost:3000",  # Alternative dev server
+    "https://*.netlify.app",  # Netlify domains
+    "https://*.netlify.com"   # Netlify custom domains
+])
 
 # Configure Flask to handle trailing slashes
 app.url_map.strict_slashes = False
@@ -81,4 +87,6 @@ def create_sample_data():
         return jsonify({'error': f'Sample data creation failed: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3001) 
+    port = int(os.environ.get('PORT', 3001))
+    debug = os.environ.get('FLASK_ENV') != 'production'
+    app.run(debug=debug, host='0.0.0.0', port=port) 
