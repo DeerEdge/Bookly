@@ -19,13 +19,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 # Configure CORS to allow requests from Netlify, Render, and localhost
-CORS(app, origins=[
-    "http://localhost:5173",  # Vite dev server
-    "http://localhost:3000",  # Alternative dev server
-    "https://*.netlify.app",  # Netlify domains
-    "https://*.netlify.com",  # Netlify custom domains
-    "https://*.onrender.com"  # Render domains
-])
+CORS(app, origins="*", supports_credentials=True)
 
 # Configure Flask to handle trailing slashes
 app.url_map.strict_slashes = False
@@ -48,6 +42,19 @@ app.register_blueprint(appointment_bp, url_prefix='/api/appointments')
 app.register_blueprint(services_bp, url_prefix='/api/services')
 app.register_blueprint(time_slots_bp, url_prefix='/api/time-slots')
 app.register_blueprint(customers_bp, url_prefix='/api/customers')
+
+# Add root route for testing
+@app.route('/')
+def root():
+    return jsonify({
+        'message': 'OrderAgain API is running!',
+        'status': 'healthy',
+        'endpoints': {
+            'health': '/api/health',
+            'businesses': '/api/businesses',
+            'login': '/api/businesses/login'
+        }
+    })
 
 @app.route('/api/health')
 def health_check():
