@@ -261,6 +261,7 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
               </motion.button>
             </form>
 
+
             <motion.div 
               className="mt-6 text-center"
               variants={itemVariants}
