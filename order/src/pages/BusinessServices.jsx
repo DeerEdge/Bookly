@@ -26,6 +26,7 @@ const BusinessServices = ({ business }) => {
   const [showTimeSelector, setShowTimeSelector] = useState(null) // { day: 'monday' }
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [closedDates, setClosedDates] = useState(new Set()) // Set of closed dates in YYYY-MM-DD format
+  const [showAddServiceModal, setShowAddServiceModal] = useState(false)
 
   // Generate time slots (30-minute increments from 5:00 AM to 11:30 PM)
   const generateTimeSlots = () => {
@@ -700,119 +701,76 @@ const BusinessServices = ({ business }) => {
           </p>
         </div>
         <div className="p-6 space-y-6">
-          {/* Add New Service */}
-          <div className="bg-gray-25 rounded-lg p-6 border border-gray-200">
-            <h4 className="text-sm font-light text-gray-900 mb-4">Add New Service</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-xs font-light text-gray-600 mb-2">Service Name</label>
-                <input
-                  type="text"
-                  placeholder="e.g., Haircut"
-                  value={newService.name}
-                  onChange={(e) => setNewService(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
-                />
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Add New Service Box */}
+            <button
+              onClick={() => setShowAddServiceModal(true)}
+              className="p-4 bg-blue-25 hover:bg-blue-50 rounded-lg border-2 border-dashed border-blue-200 hover:border-blue-300 transition-all duration-200 group"
+            >
+              <div className="flex flex-col items-center justify-center min-h-[120px] text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-200 transition-colors">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </div>
+                <h5 className="text-sm font-light text-blue-700 mb-1">Add New Service</h5>
+                <p className="text-xs text-blue-600 font-light">Click to create a new service</p>
               </div>
-              <div>
-                <label className="block text-xs font-light text-gray-600 mb-2">Duration (minutes)</label>
-                <input
-                  type="number"
-                  placeholder="30"
-                  value={newService.duration}
-                  onChange={(e) => setNewService(prev => ({ ...prev, duration: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
-                />
+            </button>
+
+            {/* Existing Services */}
+            {services.map((service, index) => (
+              <div key={service.id} className="p-4 bg-white rounded-lg border border-gray-200">
+                <div className="flex justify-between items-start mb-3">
+                  <h5 className="text-sm font-light text-gray-900">{service.name}</h5>
+                  <button
+                    onClick={() => removeService(service.id)}
+                    disabled={loading}
+                    className="text-red-500 hover:text-red-600 text-xs font-light disabled:opacity-50"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  <div>
+                    <label className="block text-xs font-light text-gray-600 mb-1">Duration (minutes)</label>
+                    <input
+                      type="number"
+                      value={service.duration}
+                      onChange={(e) => handleServiceChange(index, 'duration', e.target.value)}
+                      onBlur={() => updateService(service.id, { duration: service.duration })}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-light text-gray-600 mb-1">Price ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={service.price}
+                      onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
+                      onBlur={() => updateService(service.id, { price: service.price })}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-light text-gray-600 mb-1">Description</label>
+                    <input
+                      type="text"
+                      value={service.description || ''}
+                      onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
+                      onBlur={() => updateService(service.id, { description: service.description })}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                      placeholder="Brief description"
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-light text-gray-600 mb-2">Price ($)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="25.00"
-                  value={newService.price}
-                  onChange={(e) => setNewService(prev => ({ ...prev, price: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
-                />
-              </div>
-              <div className="flex items-end">
-                <button
-                  onClick={addService}
-                  disabled={loading || !newService.name || !newService.duration || !newService.price}
-                  className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-light transition-colors disabled:opacity-50"
-                >
-                  {loading ? 'Adding...' : 'Add Service'}
-                </button>
-              </div>
-            </div>
-            <div className="mt-4">
-              <label className="block text-xs font-light text-gray-600 mb-2">Description (optional)</label>
-              <input
-                type="text"
-                placeholder="Brief description of the service"
-                value={newService.description}
-                onChange={(e) => setNewService(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
-              />
-            </div>
+            ))}
           </div>
 
-          {/* Existing Services */}
-          {services.length > 0 && (
-            <div className="space-y-4">
-              <h4 className="text-sm font-light text-gray-900">Current Services</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {services.map((service, index) => (
-                  <div key={service.id} className="p-4 bg-white rounded-lg border border-gray-200">
-                    <div className="flex justify-between items-start mb-3">
-                      <h5 className="text-sm font-light text-gray-900">{service.name}</h5>
-                      <button
-                        onClick={() => removeService(service.id)}
-                        disabled={loading}
-                        className="text-red-500 hover:text-red-600 text-xs font-light disabled:opacity-50"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div className="space-y-2">
-                      <div>
-                        <label className="block text-xs font-light text-gray-600 mb-1">Duration (minutes)</label>
-                        <input
-                          type="number"
-                          value={service.duration}
-                          onChange={(e) => handleServiceChange(index, 'duration', e.target.value)}
-                          onBlur={() => updateService(service.id, { duration: service.duration })}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-light text-gray-600 mb-1">Price ($)</label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={service.price}
-                          onChange={(e) => handleServiceChange(index, 'price', e.target.value)}
-                          onBlur={() => updateService(service.id, { price: service.price })}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-light text-gray-600 mb-1">Description</label>
-                        <input
-                          type="text"
-                          value={service.description || ''}
-                          onChange={(e) => handleServiceChange(index, 'description', e.target.value)}
-                          onBlur={() => updateService(service.id, { description: service.description })}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                          placeholder="Service description"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+
 
           {services.length === 0 && !loading && (
             <div className="text-center py-8">
@@ -828,6 +786,92 @@ const BusinessServices = ({ business }) => {
           )}
         </div>
       </div>
+
+      {/* Add Service Modal */}
+      {showAddServiceModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowAddServiceModal(false)}>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h4 className="text-lg font-light text-gray-900">Add New Service</h4>
+              <button
+                onClick={() => setShowAddServiceModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-light text-gray-700 mb-2">Service Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Haircut"
+                  value={newService.name}
+                  onChange={(e) => setNewService(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-light text-gray-700 mb-2">Duration (minutes)</label>
+                  <input
+                    type="number"
+                    placeholder="30"
+                    value={newService.duration}
+                    onChange={(e) => setNewService(prev => ({ ...prev, duration: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-light text-gray-700 mb-2">Price ($)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="25.00"
+                    value={newService.price}
+                    onChange={(e) => setNewService(prev => ({ ...prev, price: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-light text-gray-700 mb-2">Description (optional)</label>
+                <input
+                  type="text"
+                  placeholder="Brief description of the service"
+                  value={newService.description}
+                  onChange={(e) => setNewService(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-1 focus:ring-blue-400 focus:border-blue-400 text-sm font-light"
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                onClick={() => setShowAddServiceModal(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-light transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  await addService();
+                  setShowAddServiceModal(false);
+                }}
+                disabled={loading || !newService.name || !newService.duration || !newService.price}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-light transition-colors disabled:opacity-50"
+              >
+                {loading ? 'Adding...' : 'Add Service'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
