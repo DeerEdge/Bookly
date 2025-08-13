@@ -118,6 +118,17 @@ CREATE TABLE availability_rules (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 8. Closed Dates Table
+CREATE TABLE closed_dates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  business_id UUID REFERENCES businesses(id) ON DELETE CASCADE,
+  closed_date DATE NOT NULL,
+  reason VARCHAR(255),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(business_id, closed_date)
+);
+
 -- Add foreign key constraints
 ALTER TABLE time_slots 
 ADD CONSTRAINT fk_time_slots_appointment 
@@ -137,6 +148,8 @@ CREATE INDEX idx_appointments_business_date ON appointments(business_id, appoint
 CREATE INDEX idx_appointments_customer ON appointments(customer_id);
 CREATE INDEX idx_appointments_status ON appointments(status);
 CREATE INDEX idx_availability_rules_business ON availability_rules(business_id);
+CREATE INDEX idx_closed_dates_business_date ON closed_dates(business_id, closed_date);
+CREATE INDEX idx_closed_dates_business ON closed_dates(business_id);
 ```
 
 ## 4. Test the Connection
@@ -205,6 +218,20 @@ curl -X POST http://localhost:3001/api/sample-data
 - `PUT /api/time-slots/{slot_id}/release` - Release a time slot
 - `POST /api/time-slots/business/{business_id}/block` - Block time slots
 
+### Business Hours
+- `GET /api/business-hours/business/{business_id}` - Get business hours with time slots
+- `PUT /api/business-hours/business/{business_id}` - Update all business hours
+- `PUT /api/business-hours/business/{business_id}/day/{day_name}` - Update single day hours
+- `GET /api/business-hours/business/{business_id}/available-slots` - Get available time slots by day
+- `DELETE /api/business-hours/business/{business_id}` - Delete all business hours
+
+### Closed Dates
+- `GET /api/closed-dates/business/{business_id}` - Get all closed dates for a business
+- `POST /api/closed-dates/business/{business_id}` - Add a closed date
+- `DELETE /api/closed-dates/business/{business_id}/date/{date}` - Remove a closed date
+- `PUT /api/closed-dates/business/{business_id}/bulk` - Update multiple closed dates at once
+- `GET /api/closed-dates/business/{business_id}/check/{date}` - Check if specific date is closed
+
 ## 6. Example API Usage
 
 ### Register a Business
@@ -232,6 +259,42 @@ curl -X POST http://localhost:3001/api/services \
     "description": "Basic haircut service",
     "duration": 30,
     "price": 45.00
+  }'
+```
+
+### Update Business Hours
+```bash
+curl -X PUT http://localhost:3001/api/business-hours/business/{business_id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "monday": {
+      "selectedSlots": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+      "isOpen": true
+    },
+    "tuesday": {
+      "selectedSlots": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+      "isOpen": true
+    },
+    "wednesday": {
+      "selectedSlots": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+      "isOpen": true
+    },
+    "thursday": {
+      "selectedSlots": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+      "isOpen": true
+    },
+    "friday": {
+      "selectedSlots": [8, 9, 10, 11, 12, 13, 14, 15, 16],
+      "isOpen": true
+    },
+    "saturday": {
+      "selectedSlots": [10, 11, 12, 13, 14],
+      "isOpen": true
+    },
+    "sunday": {
+      "selectedSlots": [],
+      "isOpen": false
+    }
   }'
 ```
 

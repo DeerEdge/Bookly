@@ -156,6 +156,64 @@ class ApiService {
     return this.request(`/appointments/business/${businessId}/range?${params}`);
   }
 
+  // Business Hours endpoints
+  async getBusinessHours(businessId) {
+    return this.request(`/business-hours/business/${businessId}`);
+  }
+
+  async updateBusinessHours(businessId, hoursData) {
+    return this.request(`/business-hours/business/${businessId}`, {
+      method: 'PUT',
+      body: JSON.stringify(hoursData),
+    });
+  }
+
+  async updateSingleDayHours(businessId, dayName, dayData) {
+    return this.request(`/business-hours/business/${businessId}/day/${dayName}`, {
+      method: 'PUT',
+      body: JSON.stringify(dayData),
+    });
+  }
+
+  async getAvailableTimeSlots(businessId) {
+    return this.request(`/business-hours/business/${businessId}/available-slots`);
+  }
+
+  async deleteBusinessHours(businessId) {
+    return this.request(`/business-hours/business/${businessId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Closed Dates endpoints
+  async getClosedDates(businessId) {
+    return this.request(`/closed-dates/business/${businessId}`);
+  }
+
+  async addClosedDate(businessId, date, reason = '') {
+    return this.request(`/closed-dates/business/${businessId}`, {
+      method: 'POST',
+      body: JSON.stringify({ date, reason }),
+    });
+  }
+
+  async removeClosedDate(businessId, date) {
+    return this.request(`/closed-dates/business/${businessId}/date/${date}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async updateClosedDatesBulk(businessId, closedDates) {
+    return this.request(`/closed-dates/business/${businessId}/bulk`, {
+      method: 'PUT',
+      body: JSON.stringify({ closed_dates: closedDates }),
+    });
+  }
+
+  async checkIfClosed(businessId, date) {
+    return this.request(`/closed-dates/business/${businessId}/check/${date}`);
+  }
+
   // Health check
   async healthCheck() {
     return this.request('/health');

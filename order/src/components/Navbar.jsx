@@ -91,6 +91,18 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   History
                 </button>
                 <button
+                  onClick={() => setActiveTab('services')}
+                  className={`
+                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                    ${activeTab === 'services'
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                    }
+                  `}
+                >
+                  Services
+                </button>
+                <button
                   onClick={() => setActiveTab('profile')}
                   className={`
                     px-4 py-2 text-sm font-light rounded-md transition-colors duration-200

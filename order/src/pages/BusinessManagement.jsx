@@ -5,6 +5,7 @@ import BusinessDashboard from './BusinessDashboard'
 import BusinessCalendar from '../components/BusinessCalendar'
 import BusinessHistory from './BusinessHistory'
 import BusinessProfile from './BusinessProfile'
+import BusinessServices from './BusinessServices'
 import BusinessRegistration from './BusinessRegistration'
 
 const BusinessManagement = ({ 
@@ -76,6 +77,11 @@ const BusinessManagement = ({
           <BusinessHistory 
             appointments={appointments.filter(apt => apt.business_id === currentUser.id)}
             currentUser={currentUser}
+          />
+        )}
+        {activeTab === 'services' && (
+          <BusinessServices 
+            business={currentUser}
           />
         )}
         {activeTab === 'profile' && (

@@ -13,28 +13,7 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
     email: business?.email || ''
   })
 
-  const [services, setServices] = useState([])
-  const [newService, setNewService] = useState({
-    name: '',
-    duration: '',
-    price: ''
-  })
 
-  // Load services for the business
-  useEffect(() => {
-    if (business?.id) {
-      loadServices()
-    }
-  }, [business?.id])
-
-  const loadServices = async () => {
-    try {
-      const servicesData = await apiService.getBusinessServices(business.id)
-      setServices(servicesData)
-    } catch (error) {
-      console.error('Failed to load services:', error)
-    }
-  }
 
   // Update local state when business prop changes (but only if not editing)
   useEffect(() => {
@@ -57,55 +36,7 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
     }))
   }
 
-  const handleServiceChange = (index, field, value) => {
-    const updatedServices = [...services]
-    updatedServices[index] = {
-      ...updatedServices[index],
-      [field]: field === 'duration' || field === 'price' ? Number(value) : value
-    }
-    setServices(updatedServices)
-  }
 
-  const addService = async () => {
-    if (newService.name && newService.duration && newService.price) {
-      try {
-        const serviceData = {
-          business_id: business.id,
-          name: newService.name,
-          description: `Professional ${newService.name} service`,
-          duration: Number(newService.duration),
-          price: Number(newService.price)
-        }
-        
-        await apiService.createService(serviceData)
-        setNewService({ name: '', duration: '', price: '' })
-        loadServices() // Reload services
-      } catch (error) {
-        console.error('Failed to add service:', error)
-        alert('Failed to add service. Please try again.')
-      }
-    }
-  }
-
-  const removeService = async (serviceId) => {
-    try {
-      await apiService.deleteService(serviceId)
-      loadServices() // Reload services
-    } catch (error) {
-      console.error('Failed to remove service:', error)
-      alert('Failed to remove service. Please try again.')
-    }
-  }
-
-  const updateService = async (serviceId, updates) => {
-    try {
-      await apiService.updateService(serviceId, updates)
-      loadServices() // Reload services
-    } catch (error) {
-      console.error('Failed to update service:', error)
-      alert('Failed to update service. Please try again.')
-    }
-  }
 
   const handleSave = async () => {
     try {
@@ -292,128 +223,7 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
         </div>
       )}
 
-      {/* Services */}
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-light text-gray-900">Services</h3>
-          <p className="text-sm text-gray-500 font-light mt-1">
-            Manage the services you offer to customers
-          </p>
-        </div>
-        <div className="p-6 space-y-6">
-          {/* Existing Services */}
-          {services.length > 0 && (
-            <div className="space-y-4">
-              <h4 className="text-sm font-light text-gray-900">Current Services</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {services.map((service, index) => (
-                  <div key={service.id} className="p-4 bg-gray-25 rounded-lg border border-gray-200">
-                    <div className="flex justify-between items-start mb-3">
-                      <h5 className="text-sm font-light text-gray-900">{service.name}</h5>
-                      <button
-                        onClick={() => removeService(service.id)}
-                        className="text-red-500 hover:text-red-600 text-xs font-light"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                    <div className="space-y-2">
-                      <div>
-                        <label htmlFor={`service-duration-${service.id}`} className="block text-xs font-light text-gray-600 mb-1">Duration (minutes)</label>
-                        <input
-                          id={`service-duration-${service.id}`}
-                          name={`service-duration-${service.id}`}
-                          type="number"
-                          value={service.duration}
-                          onChange={(e) => {
-                            const updatedService = { ...service, duration: Number(e.target.value) }
-                            updateService(service.id, updatedService)
-                          }}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor={`service-price-${service.id}`} className="block text-xs font-light text-gray-600 mb-1">Price ($)</label>
-                        <input
-                          id={`service-price-${service.id}`}
-                          name={`service-price-${service.id}`}
-                          type="number"
-                          value={service.price}
-                          onChange={(e) => {
-                            const updatedService = { ...service, price: Number(e.target.value) }
-                            updateService(service.id, updatedService)
-                          }}
-                          className="w-full px-2 py-1 border border-gray-200 rounded text-xs font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
-          {/* Add New Service */}
-          <div className="p-4 bg-blue-25 rounded-lg border border-blue-100">
-            <h4 className="text-sm font-light text-gray-900 mb-4">Add New Service</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label htmlFor="new-service-name" className="block text-xs font-light text-gray-600 mb-2">Service Name</label>
-                <input
-                  id="new-service-name"
-                  name="new-service-name"
-                  type="text"
-                  value={newService.name}
-                  onChange={(e) => setNewService({...newService, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                  placeholder="e.g., Haircut, Massage"
-                />
-              </div>
-              <div>
-                <label htmlFor="new-service-duration" className="block text-xs font-light text-gray-600 mb-2">Duration (minutes)</label>
-                <input
-                  id="new-service-duration"
-                  name="new-service-duration"
-                  type="number"
-                  value={newService.duration}
-                  onChange={(e) => setNewService({...newService, duration: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                  placeholder="30"
-                />
-              </div>
-              <div>
-                <label htmlFor="new-service-price" className="block text-xs font-light text-gray-600 mb-2">Price ($)</label>
-                <input
-                  id="new-service-price"
-                  name="new-service-price"
-                  type="number"
-                  value={newService.price}
-                  onChange={(e) => setNewService({...newService, price: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm font-light focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                  placeholder="50"
-                />
-              </div>
-            </div>
-            <button
-              onClick={addService}
-              disabled={!newService.name || !newService.duration || !newService.price}
-              className={`mt-4 px-4 py-2 rounded-lg font-light text-sm transition-colors ${
-                newService.name && newService.duration && newService.price
-                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              }`}
-            >
-              Add Service
-            </button>
-          </div>
-
-          {services.length === 0 && (
-            <div className="text-center py-8">
-              <p className="text-gray-500 font-light">No services added yet</p>
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Customer Page Preview */}
       <div className="bg-white rounded-lg border border-gray-200">
@@ -436,23 +246,7 @@ const BusinessProfile = ({ business, onUpdateProfile }) => {
             
             <div className="space-y-4">
               <h3 className="text-lg font-light text-gray-900 mb-4">Available Services</h3>
-              {services.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {services.map((service) => (
-                    <div key={service.id} className="p-4 bg-white rounded-lg border border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h4 className="text-sm font-light text-gray-900">{service.name}</h4>
-                          <p className="text-xs text-gray-500">{service.duration} minutes</p>
-                        </div>
-                        <span className="text-sm font-light text-gray-900">${service.price}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 font-light text-center">No services available</p>
-              )}
+              <p className="text-gray-500 font-light text-center">Services are now managed in the Services tab</p>
             </div>
           </div>
         </div>
