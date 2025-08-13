@@ -19,7 +19,11 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 # Configure CORS to allow requests from Netlify, Render, and localhost
-CORS(app, origins="*", supports_credentials=True)
+CORS(app, 
+     origins=["https://bookwithbookly.netlify.app", "http://localhost:5173", "http://localhost:3000"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization", "Accept"],
+     supports_credentials=True)
 
 # Configure Flask to handle trailing slashes
 app.url_map.strict_slashes = False
@@ -55,6 +59,16 @@ def root():
             'login': '/api/businesses/login'
         }
     })
+
+# Handle preflight OPTIONS requests
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = jsonify({'message': 'OK'})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization,Accept")
+        response.headers.add('Access-Control-Allow-Methods', "GET,PUT,POST,DELETE,OPTIONS")
+        return response
 
 @app.route('/api/health')
 def health_check():
