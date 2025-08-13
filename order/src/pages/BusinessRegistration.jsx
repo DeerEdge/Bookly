@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import Notification from '../components/Notification'
+import useNotification from '../hooks/useNotification'
 
 const BusinessRegistration = ({ onBusinessRegistered }) => {
+  const { notification, showSuccess, showError, hideNotification } = useNotification()
   const [businessInfo, setBusinessInfo] = useState({
     name: '',
     category: '',
@@ -45,12 +48,12 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
     e.preventDefault()
     
     if (!businessInfo.name || !businessInfo.category || !businessInfo.address || !businessInfo.email || !businessInfo.password) {
-      alert('Please fill in all required fields')
+      showError('Please fill in all required fields')
       return
     }
 
     if (services.length === 0) {
-      alert('Please add at least one service')
+      showError('Please add at least one service')
       return
     }
 
@@ -74,7 +77,7 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
     })
     setServices([])
     
-    alert('Business registered successfully!')
+    showSuccess('Business registered successfully!')
   }
 
   return (
@@ -259,6 +262,14 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
           </button>
         </form>
       </div>
+
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={hideNotification}
+        duration={notification.duration}
+      />
     </div>
   )
 }

@@ -153,6 +153,17 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
     });
   };
 
+  const getAppointmentStatus = (appointment) => {
+    const appointmentDateTime = new Date(`${appointment.date}T${appointment.time}`)
+    const now = new Date()
+    
+    if (appointmentDateTime < now) {
+      return { text: 'Completed', style: 'bg-gray-100 text-gray-800' }
+    } else {
+      return { text: 'Confirmed', style: 'bg-green-100 text-green-800' }
+    }
+  }
+
   // Helper function to get appointment data with fallbacks
   const getAppointmentData = (appointment) => {
     return {
@@ -370,7 +381,7 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
             .map(getAppointmentData)
             .filter(apt => new Date(`${apt.date}T${apt.time}`) > now)
             .sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`))
-            .slice(0, 10)
+            .slice(0, 8)
 
           if (upcoming.length === 0) {
             return (
@@ -382,41 +393,55 @@ const BusinessCalendar = ({ appointments, currentUser }) => {
 
           return (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-2 font-light text-gray-600">Customer</th>
-                    <th className="text-left py-2 font-light text-gray-600">Service</th>
-                    <th className="text-left py-2 font-light text-gray-600">Date & Time</th>
-                    <th className="text-left py-2 font-light text-gray-600">Price</th>
+              <table className="w-full">
+                <thead className="bg-gray-25">
+                  <tr>
+                    <th className="text-left p-4 text-xs font-light text-gray-500">Customer</th>
+                    <th className="text-left p-4 text-xs font-light text-gray-500">Service</th>
+                    <th className="text-left p-4 text-xs font-light text-gray-500">Date & Time</th>
+                    <th className="text-left p-4 text-xs font-light text-gray-500">Price</th>
+                    <th className="text-left p-4 text-xs font-light text-gray-500">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {upcoming.map(appointment => (
-                    <tr key={appointment.id} className="border-b border-gray-50">
-                      <td className="py-3">
+                    <tr key={appointment.id} className="border-b border-gray-200">
+                      <td className="p-4">
                         <div>
                           <p className="text-sm font-light text-gray-900">{appointment.customer_name}</p>
                           <p className="text-xs text-gray-500">{appointment.customer_email}</p>
                         </div>
                       </td>
-                      <td className="py-3">
+                      <td className="p-4">
                         <p className="text-sm font-light text-gray-900">{appointment.service_name}</p>
                       </td>
-                      <td className="py-3">
+                      <td className="p-4">
                         <p className="text-sm font-light text-gray-900">
-                          {new Date(`${appointment.date}T${appointment.time}`).toLocaleString('en-US', {
-                            weekday: 'short',
+                          {new Date(`${appointment.date}T${appointment.time}`).toLocaleDateString('en-US', {
                             month: 'short',
-                            day: 'numeric',
+                            day: 'numeric'
+                          })}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(`${appointment.date}T${appointment.time}`).toLocaleTimeString('en-US', {
                             hour: 'numeric',
                             minute: '2-digit',
                             hour12: true
                           })}
                         </p>
                       </td>
-                      <td className="py-3">
+                      <td className="p-4">
                         <p className="text-sm font-light text-gray-900">${appointment.service_price}</p>
+                      </td>
+                      <td className="p-4">
+                        {(() => {
+                          const status = getAppointmentStatus(appointment)
+                          return (
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-light ${status.style}`}>
+                              {status.text}
+                            </span>
+                          )
+                        })()}
                       </td>
                     </tr>
                   ))}

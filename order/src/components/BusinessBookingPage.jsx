@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import apiService from '../services/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Notification from './Notification';
+import useNotification from '../hooks/useNotification';
 
 /** Utils */
 const toLocalYYYYMMDD = (d) => {
@@ -195,6 +197,7 @@ const DayCalendar = ({
 /** Main Page */
 const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   const { businessSlug } = useParams();
+  const { notification, showError, hideNotification } = useNotification();
 
   // Config - now using real business hours from API
 
@@ -294,11 +297,11 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   const handleBookAppointment = async (e) => {
     e.preventDefault();
     if (!selectedService || !apiDate || !selectedTime) {
-      alert('Please choose a service, date, and time.');
+      showError('Please choose a service, date, and time.');
       return;
     }
     if (!customerInfo.name || !customerInfo.email) {
-      alert('Please provide your name and email.');
+      showError('Please provide your name and email.');
       return;
     }
 
@@ -341,7 +344,7 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
 
       setTimeout(() => setBookingSuccess(false), 2200);
     } catch (err) {
-      alert(`Failed to book appointment: ${err.message}`);
+      showError(`Failed to book appointment: ${err.message}`);
     } finally {
       setSubmitting(false);
     }
@@ -581,6 +584,14 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
             </div>
           </div>
         )}
+
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          isVisible={notification.isVisible}
+          onClose={hideNotification}
+          duration={notification.duration}
+        />
       </div>
     </div>
   );

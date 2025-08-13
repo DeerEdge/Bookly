@@ -5,6 +5,43 @@ const BusinessHistory = ({ appointments, currentUser }) => {
   const [selectedService, setSelectedService] = useState('all')
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [hoveredBar, setHoveredBar] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const appointmentsPerPage = 10
+
+  const getAppointmentStatus = (appointment) => {
+    const appointmentDateTime = new Date(`${appointment.date}T${appointment.time}`)
+    const now = new Date()
+    
+    // Check if date parsing failed
+    if (isNaN(appointmentDateTime.getTime())) {
+      console.warn('Invalid appointment date/time:', {
+        date: appointment.date,
+        time: appointment.time,
+        customer: appointment.customer_name
+      })
+      // Default to confirmed for invalid dates
+      return { text: 'Confirmed', style: 'bg-green-100 text-green-800' }
+    }
+    
+    const isPast = appointmentDateTime < now
+    const result = isPast 
+      ? { text: 'Completed', style: 'bg-gray-100 text-gray-800' }
+      : { text: 'Confirmed', style: 'bg-green-100 text-green-800' }
+    
+    // Debug the first few to see what's happening
+    if (appointment.customer_name && (appointment.customer_name.includes('John') || appointment.customer_name.includes('Jane') || appointment.customer_name.includes('Alice'))) {
+      console.log('Status Debug for', appointment.customer_name, ':', {
+        date: appointment.date,
+        time: appointment.time,
+        appointmentDateTime: appointmentDateTime.toISOString(),
+        now: now.toISOString(),
+        isPast,
+        result
+      })
+    }
+    
+    return result
+  }
 
   // Helper function to get appointment data with fallbacks
   const getAppointmentData = (appointment) => {
@@ -177,6 +214,24 @@ const BusinessHistory = ({ appointments, currentUser }) => {
   // Create 3 intuitive scale values: 0, mid, max
   const scaleValues = [0, Math.round(yAxisMax / 2), yAxisMax]
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredAppointments.length / appointmentsPerPage)
+  const startIndex = (currentPage - 1) * appointmentsPerPage
+  const endIndex = startIndex + appointmentsPerPage
+  const paginatedAppointments = filteredAppointments.slice(startIndex, endIndex)
+
+  const goToPage = (page) => {
+    setCurrentPage(page)
+  }
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1)
+  }
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+  }
+
   // Debug logging
   console.log('Chart Data:', {
     maxAppointments,
@@ -198,29 +253,29 @@ const BusinessHistory = ({ appointments, currentUser }) => {
       </div>
 
       {/* Analytics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">Total Appointments</h3>
-          <p className="text-2xl font-light text-gray-900">{analytics.totalAppointments}</p>
+          <p className="text-xl sm:text-2xl font-light text-gray-900">{analytics.totalAppointments}</p>
           <p className={`text-xs font-light ${analytics.appointmentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {formatPercentage(analytics.appointmentChange)} from last month
           </p>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">Total Revenue</h3>
-          <p className="text-2xl font-light text-gray-900">{formatCurrency(analytics.totalRevenue)}</p>
+          <p className="text-xl sm:text-2xl font-light text-gray-900">{formatCurrency(analytics.totalRevenue)}</p>
           <p className={`text-xs font-light ${analytics.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {formatPercentage(analytics.revenueChange)} from last month
           </p>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">This Month</h3>
-          <p className="text-2xl font-light text-gray-900">{analytics.currentMonthAppointments}</p>
+          <p className="text-xl sm:text-2xl font-light text-gray-900">{analytics.currentMonthAppointments}</p>
           <p className="text-xs text-gray-500 font-light">appointments</p>
         </div>
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200">
           <h3 className="text-sm font-light text-gray-500 mb-2">This Month Revenue</h3>
-          <p className="text-2xl font-light text-gray-900">{formatCurrency(analytics.currentMonthRevenue)}</p>
+          <p className="text-xl sm:text-2xl font-light text-gray-900">{formatCurrency(analytics.currentMonthRevenue)}</p>
           <p className="text-xs text-gray-500 font-light">earned</p>
         </div>
       </div>
@@ -379,10 +434,67 @@ const BusinessHistory = ({ appointments, currentUser }) => {
       {/* Appointment History Table */}
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-light text-gray-900">Appointment History</h3>
-          <p className="text-sm text-gray-500 font-light mt-1">
-            Showing {filteredAppointments.length} appointments
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-light text-gray-900">Appointment History</h3>
+              <p className="text-sm text-gray-500 font-light mt-1">
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredAppointments.length)} of {filteredAppointments.length} appointments
+              </p>
+            </div>
+            
+            {/* Pagination Controls - Top Right */}
+            {totalPages > 1 && (
+              <div className="flex items-center space-x-2">
+                <div className="text-sm text-gray-500 font-light mr-3">
+                  Page {currentPage} of {totalPages}
+                </div>
+                <button
+                  onClick={goToPreviousPage}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 text-sm font-light text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Previous
+                </button>
+                
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+                    
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => goToPage(pageNum)}
+                        className={`px-3 py-2 text-sm font-light rounded-lg transition-colors ${
+                          currentPage === pageNum
+                            ? 'bg-blue-500 text-white'
+                            : 'text-gray-600 bg-white border border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 text-sm font-light text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -396,7 +508,7 @@ const BusinessHistory = ({ appointments, currentUser }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredAppointments.map(appointment => (
+              {paginatedAppointments.map(appointment => (
                 <tr key={appointment.id} className="border-b border-gray-200">
                   <td className="p-4">
                     <div>
@@ -408,16 +520,32 @@ const BusinessHistory = ({ appointments, currentUser }) => {
                     <p className="text-sm font-light text-gray-900">{appointment.service_name}</p>
                   </td>
                   <td className="p-4">
-                    <p className="text-sm font-light text-gray-900">{appointment.date}</p>
-                    <p className="text-xs text-gray-500">{appointment.time}</p>
+                    <p className="text-sm font-light text-gray-900">
+                      {new Date(appointment.date).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(`2000-01-01T${appointment.time}`).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
+                    </p>
                   </td>
                   <td className="p-4">
                     <p className="text-sm font-light text-gray-900">{formatCurrency(appointment.service_price)}</p>
                   </td>
                   <td className="p-4">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-light bg-green-100 text-green-800">
-                      Completed
-                    </span>
+                    {(() => {
+                      const status = getAppointmentStatus(appointment)
+                      return (
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-light ${status.style}`}>
+                          {status.text}
+                        </span>
+                      )
+                    })()}
                   </td>
                 </tr>
               ))}

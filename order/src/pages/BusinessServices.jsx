@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import apiService from '../services/api'
+import Notification from '../components/Notification'
+import useNotification from '../hooks/useNotification'
 
 const BusinessServices = ({ business }) => {
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(false)
+  const { notification, showSuccess, showError, hideNotification } = useNotification()
   const [newService, setNewService] = useState({
     name: '',
     duration: '',
@@ -236,7 +239,7 @@ const BusinessServices = ({ business }) => {
         loadServices() // Reload services
       } catch (error) {
         console.error('Failed to add service:', error)
-        alert('Failed to add service. Please try again.')
+        showError('Failed to add service. Please try again.')
       } finally {
         setLoading(false)
       }
@@ -250,7 +253,7 @@ const BusinessServices = ({ business }) => {
       loadServices() // Reload services
     } catch (error) {
       console.error('Failed to remove service:', error)
-      alert('Failed to remove service. Please try again.')
+      showError('Failed to remove service. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -263,7 +266,7 @@ const BusinessServices = ({ business }) => {
       loadServices() // Reload services
     } catch (error) {
       console.error('Failed to update service:', error)
-      alert('Failed to update service. Please try again.')
+      showError('Failed to update service. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -381,18 +384,18 @@ const BusinessServices = ({ business }) => {
         try {
           const closedDatesResult = await apiService.updateClosedDatesBulk(business.id, Array.from(closedDates))
           console.log('✅ Closed dates save result:', closedDatesResult)
-          alert('Business hours and availability saved successfully!')
+          showSuccess('Business hours and availability saved successfully!')
         } catch (closedDatesError) {
           console.warn('⚠️ Could not save closed dates (table may not exist):', closedDatesError.message)
-          alert('Business hours saved successfully! (Note: Closed dates will be saved once database is updated)')
+          showSuccess('Business hours saved successfully! (Note: Closed dates will be saved once database is updated)')
         }
       } else {
         console.log('❌ No business ID available for saving hours')
-        alert('No business ID available. Please try logging in again.')
+        showError('No business ID available. Please try logging in again.')
       }
     } catch (error) {
       console.error('❌ Failed to save business hours:', error)
-      alert('Failed to save business hours. Please try again.')
+      showError('Failed to save business hours. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -402,10 +405,8 @@ const BusinessServices = ({ business }) => {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-light text-gray-900">Services & Hours</h2>
-        <p className="text-gray-500 font-light mt-1">
-          Manage your services and business hours
-        </p>
+        <h1 className="text-2xl sm:text-3xl font-light text-gray-900 mb-2">Services & Hours</h1>
+        <p className="text-gray-600 font-light">Manage your services and business hours</p>
       </div>
 
 
@@ -418,7 +419,7 @@ const BusinessServices = ({ business }) => {
           </p>
         </div>
         <div className="p-8">
-          <div className="flex gap-8">
+          <div className="flex flex-col lg:flex-row gap-8">
             {/* Monthly Availability Calendar - Left Side */}
             <div className="flex-1 max-w-md">
               {/* Calendar Header */}
@@ -574,7 +575,7 @@ const BusinessServices = ({ business }) => {
                     </div>
                     
                     {businessHours[key].isOpen ? (
-                      <div className="flex items-center space-x-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                         <button
                           onClick={() => openTimeSelector(key)}
                           className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded text-xs font-light border border-blue-200 transition-colors max-w-48 truncate"
@@ -601,12 +602,12 @@ const BusinessServices = ({ business }) => {
                 ))}
               </div>
               
-              <div className="mt-6 flex justify-between items-center">
+              <div className="mt-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                 <p className="text-xs text-gray-500 font-light">Click calendar days or time buttons to change hours</p>
                 <button
                   onClick={saveBusinessHours}
                   disabled={loading}
-                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-light transition-colors disabled:opacity-50"
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-light transition-colors disabled:opacity-50"
                 >
                   {loading ? 'Saving...' : 'Save Hours'}
                 </button>
@@ -618,8 +619,8 @@ const BusinessServices = ({ business }) => {
 
       {/* Time Selector Modal */}
       {showTimeSelector && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowTimeSelector(null)}>
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setShowTimeSelector(null)}>
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg font-light text-gray-900">
                 Select Available Times
@@ -702,7 +703,7 @@ const BusinessServices = ({ business }) => {
         </div>
         <div className="p-6 space-y-6">
           {/* Services Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Add New Service Box */}
             <button
               onClick={() => setShowAddServiceModal(true)}
@@ -872,6 +873,14 @@ const BusinessServices = ({ business }) => {
           </div>
         </div>
       )}
+
+      <Notification
+        message={notification.message}
+        type={notification.type}
+        isVisible={notification.isVisible}
+        onClose={hideNotification}
+        duration={notification.duration}
+      />
     </div>
   )
 }

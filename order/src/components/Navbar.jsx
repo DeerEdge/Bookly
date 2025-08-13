@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
 const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPublic }) => {
   const navigate = useNavigate()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handlePublicTabClick = (tab) => {
     if (isPublic) {
@@ -24,34 +25,42 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
     // If not logged in, allow normal navigation to landing page
   }
 
+  const handleMobileTabClick = (tab) => {
+    if (isPublic) {
+      navigate(`/${tab}`)
+    } else if (setActiveTab) {
+      setActiveTab(tab)
+    }
+    setIsMobileMenuOpen(false) // Close mobile menu after selection
+  }
+
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-white border-b border-gray-200 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Brand */}
           <div className="flex items-center">
-              <Link 
-                to={currentUser || isAdmin ? "#" : "/"} 
-                onClick={handleLogoClick}
-                className={`text-2xl text-gray-900 tracking-tight ${currentUser || isAdmin ? 'cursor-default' : 'cursor-pointer'}`}
+            <Link 
+              to={currentUser || isAdmin ? "#" : "/"} 
+              onClick={handleLogoClick}
+              className={`text-2xl text-gray-900 tracking-tight ${currentUser || isAdmin ? 'cursor-default' : 'cursor-pointer'}`}
+            >
+              <motion.span
+                whileHover={{ 
+                  textShadow: currentUser || isAdmin ? "none" : "0 0 30px rgba(59, 130, 246, 0.8)"
+                }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeInOut"
+                }}
               >
-                  <motion.span
-                    whileHover={{ 
-                      textShadow: currentUser || isAdmin ? "none" : "0 0 30px rgba(59, 130, 246, 0.8)"
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    Bookly
-                  </motion.span>
-                </Link>
-            
+                Bookly
+              </motion.span>
+            </Link>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="flex items-center space-x-1">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
             {isAdmin && currentUser ? (
               <>
                 <button
@@ -185,7 +194,170 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
               </>
             ) : null}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200"
+            >
+              <svg
+                className={`w-6 h-6 transform transition-transform duration-200 ${isMobileMenuOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu Accordion */}
+        {isMobileMenuOpen && (
+          <div className="absolute top-16 left-0 right-0 md:hidden bg-white bg-opacity-95 backdrop-blur-sm border-b border-gray-200 shadow-lg z-50">
+            <div className="py-3 space-y-1">
+              {isAdmin && currentUser ? (
+                <>
+                  <button
+                    onClick={() => handleMobileTabClick('dashboard')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'dashboard'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => handleMobileTabClick('calendar')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'calendar'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Calendar
+                  </button>
+                  <button
+                    onClick={() => handleMobileTabClick('history')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'history'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    History
+                  </button>
+                  <button
+                    onClick={() => handleMobileTabClick('services')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'services'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Services
+                  </button>
+                  <button
+                    onClick={() => handleMobileTabClick('profile')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'profile'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Profile
+                  </button>
+                  <div className="border-t border-gray-200 mt-2 pt-2">
+                    <button
+                      onClick={() => { onLogout(); setIsMobileMenuOpen(false); }}
+                      className="w-full text-left px-4 py-3 text-sm font-light bg-gray-800 hover:bg-gray-900 text-white transition-colors duration-200"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </>
+              ) : isAdmin ? (
+                <>
+                  <button
+                    onClick={() => handleMobileTabClick('login')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'login'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => handleMobileTabClick('register')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'register'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Register Business
+                  </button>
+                </>
+              ) : isPublic ? (
+                <>
+                  <button
+                    onClick={() => handleMobileTabClick('find-service')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'find-service'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Find a Service
+                  </button>
+                  <button
+                    onClick={() => handleMobileTabClick('business-pricing')}
+                    className={`
+                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
+                      ${activeTab === 'business-pricing'
+                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }
+                    `}
+                  >
+                    Business Pricing
+                  </button>
+                  <div className="border-t border-gray-200 mt-2 pt-2">
+                    <button
+                      onClick={() => { navigate('/manage/login'); setIsMobileMenuOpen(false); }}
+                      className="w-full text-left px-4 py-3 text-sm font-light bg-gray-800 hover:bg-gray-900 text-white transition-colors duration-200"
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )
