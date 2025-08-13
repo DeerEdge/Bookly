@@ -214,6 +214,23 @@ class ApiService {
     return this.request(`/closed-dates/business/${businessId}/check/${date}`);
   }
 
+  // Availability endpoints
+  async getAvailableSlots(businessId, date) {
+    return this.request(`/availability/business/${businessId}/date/${date}`);
+  }
+
+  async getAvailableSlotsRange(businessId, startDate, endDate) {
+    const params = new URLSearchParams({
+      start_date: startDate,
+      end_date: endDate,
+    });
+    return this.request(`/availability/business/${businessId}/range?${params}`);
+  }
+
+  async getBusinessAvailabilitySummary(businessId) {
+    return this.request(`/availability/business/${businessId}/summary`);
+  }
+
   // Health check
   async healthCheck() {
     return this.request('/health');

@@ -12,6 +12,7 @@ from routes.time_slots import time_slots_bp
 from routes.customers import customers_bp
 from routes.business_hours import business_hours_bp
 from routes.closed_dates import closed_dates_bp
+from routes.availability import availability_bp
 from services.database import DatabaseService
 from config import Config
 
@@ -50,6 +51,7 @@ app.register_blueprint(time_slots_bp, url_prefix='/api/time-slots')
 app.register_blueprint(customers_bp, url_prefix='/api/customers')
 app.register_blueprint(business_hours_bp, url_prefix='/api/business-hours')
 app.register_blueprint(closed_dates_bp, url_prefix='/api/closed-dates')
+app.register_blueprint(availability_bp, url_prefix='/api/availability')
 
 # Add root route for testing
 @app.route('/')

@@ -24,6 +24,12 @@ const buildSlots = (startHHMM, endHHMM, minutes = 60) => {
   }
   return slots;
 };
+
+// New function to use real business availability
+const buildSlotsFromAvailability = (availableSlots) => {
+  // availableSlots is already an array of "HH:MM" strings from the API
+  return availableSlots || [];
+};
 const fmt12h = (hhmm) => {
   const [h, m] = hhmm.split(':').map(Number);
   return new Date(2000, 0, 1, h, m).toLocaleTimeString('en-US', {
@@ -33,20 +39,21 @@ const fmt12h = (hhmm) => {
   });
 };
 
-/** Day Calendar (previous style) */
+/** Day Calendar (updated to use real business hours) */
 const DayCalendar = ({
   date,
   onChangeDate,
   bookings,
   selectedTime,
   onSelectTime,
-  start = '08:00',
-  end = '20:00',
-  slotMinutes = 60,
+  businessId,
+  availableSlots = [],
+  loading = false,
 }) => {
-  const slots = useMemo(() => buildSlots(start, end, slotMinutes), [start, end, slotMinutes]);
+  // Use available slots from API instead of hardcoded hours
+  const slots = useMemo(() => buildSlotsFromAvailability(availableSlots), [availableSlots]);
 
-  // Normalize booked times to "HH:MM"
+  // Normalize booked times to "HH:MM" (this is now handled by the API, but keep for backward compatibility)
   const booked = useMemo(
     () =>
       (bookings || [])
@@ -117,34 +124,51 @@ const DayCalendar = ({
         />
       </div>
 
-      {/* Hourly baseline */}
+      {/* Time slots */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-        {slots.map((hhmm) => {
-          const bookedSlot = booked.includes(hhmm);
-          const past = isPastSlot(hhmm);
-          const disabled = bookedSlot || past;
-          const selected = selectedTime === hhmm;
-
-          return (
-            <button
-              key={hhmm}
-              type="button"
-              disabled={disabled}
-              onClick={() => onSelectTime(hhmm)}
-              className={[
-                'px-3 py-2 rounded-lg border text-sm transition-colors',
-                disabled
-                  ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-                  : selected
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-white text-gray-800 border-gray-200 hover:border-blue-300 hover:bg-blue-25',
-              ].join(' ')}
-              title={bookedSlot ? 'Already booked' : past ? 'Past time' : 'Available'}
+        {loading ? (
+          // Loading state
+          Array.from({ length: 8 }, (_, i) => (
+            <div
+              key={i}
+              className="px-3 py-2 rounded-lg border border-gray-200 bg-gray-100 animate-pulse"
             >
-              {fmt12h(hhmm)}
-            </button>
-          );
-        })}
+              <div className="h-4 bg-gray-300 rounded"></div>
+            </div>
+          ))
+        ) : slots.length === 0 ? (
+          // No slots available
+          <div className="col-span-full text-center py-8">
+            <p className="text-gray-500 text-sm">No available times for this date</p>
+          </div>
+        ) : (
+          // Available slots (already filtered by API)
+          slots.map((hhmm) => {
+            const past = isPastSlot(hhmm);
+            const disabled = past; // API already filters out booked slots
+            const selected = selectedTime === hhmm;
+
+            return (
+              <button
+                key={hhmm}
+                type="button"
+                disabled={disabled}
+                onClick={() => onSelectTime(hhmm)}
+                className={[
+                  'px-3 py-2 rounded-lg border text-sm transition-colors',
+                  disabled
+                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                    : selected
+                    ? 'bg-blue-500 text-white border-blue-500'
+                    : 'bg-white text-gray-800 border-gray-200 hover:border-blue-300 hover:bg-blue-25',
+                ].join(' ')}
+                title={past ? 'Past time' : 'Available'}
+              >
+                {fmt12h(hhmm)}
+              </button>
+            );
+          })
+        )}
       </div>
 
       {/* Legend */}
@@ -172,10 +196,7 @@ const DayCalendar = ({
 const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   const { businessSlug } = useParams();
 
-  // Config
-  const BUSINESS_HOURS_START = '08:00';
-  const BUSINESS_HOURS_END = '20:00';
-  const SLOT_MINUTES = 60;
+  // Config - now using real business hours from API
 
   const [business, setBusiness] = useState(null);
   const [services, setServices] = useState([]);
@@ -193,6 +214,8 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
   const [showQRPopup, setShowQRPopup] = useState(false);
 
   const [bookings, setBookings] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
 
   const apiDate = useMemo(() => toLocalYYYYMMDD(selectedDate), [selectedDate]);
 
@@ -245,6 +268,29 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
     fetchBookings();
   }, [business?.id, apiDate]);
 
+  // Load available slots from business hours API
+  useEffect(() => {
+    const fetchAvailableSlots = async () => {
+      if (business?.id && apiDate) {
+        try {
+          setSlotsLoading(true);
+          console.log('🔍 Loading available slots for:', business.id, apiDate);
+          const availabilityData = await apiService.getAvailableSlots(business.id, apiDate);
+          console.log('✅ Available slots:', availabilityData);
+          setAvailableSlots(availabilityData.available_slots || []);
+        } catch (error) {
+          console.error('❌ Failed to load available slots:', error);
+          setAvailableSlots([]);
+        } finally {
+          setSlotsLoading(false);
+        }
+      } else {
+        setAvailableSlots([]);
+      }
+    };
+    fetchAvailableSlots();
+  }, [business?.id, apiDate]);
+
   const handleBookAppointment = async (e) => {
     e.preventDefault();
     if (!selectedService || !apiDate || !selectedTime) {
@@ -277,10 +323,14 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
       await onBookAppointment(appointment);
       setBookingSuccess(true);
 
-      // refresh bookings so the slot becomes unavailable
+      // refresh bookings and available slots so the slot becomes unavailable
       try {
-        const refreshed = await apiService.getBookingsForBusiness(business.id, apiDate);
-        setBookings(Array.isArray(refreshed) ? refreshed : []);
+        const [refreshedBookings, refreshedAvailability] = await Promise.all([
+          apiService.getBookingsForBusiness(business.id, apiDate),
+          apiService.getAvailableSlots(business.id, apiDate)
+        ]);
+        setBookings(Array.isArray(refreshedBookings) ? refreshedBookings : []);
+        setAvailableSlots(refreshedAvailability.available_slots || []);
       } catch {}
 
       // reset fields (keep date)
@@ -364,9 +414,9 @@ const BusinessBookingPage = ({ businesses, onBookAppointment }) => {
                 bookings={bookings}
                 selectedTime={selectedTime}
                 onSelectTime={setSelectedTime}
-                start={BUSINESS_HOURS_START}
-                end={BUSINESS_HOURS_END}
-                slotMinutes={SLOT_MINUTES}
+                businessId={business?.id}
+                availableSlots={availableSlots}
+                loading={slotsLoading}
               />
             </div>
 
