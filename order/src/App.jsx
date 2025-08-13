@@ -8,6 +8,7 @@ import FindServicePage from './pages/FindServicePage'
 import BusinessPricingPage from './pages/BusinessPricingPage'
 import BusinessBookingPage from './components/BusinessBookingPage'
 import apiService from './services/api'
+import 'react-calendar/dist/Calendar.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
