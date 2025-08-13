@@ -50,15 +50,6 @@ const BusinessPricingPage = () => {
         animate="visible"
       >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div 
-            className="w-20 h-20 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-8"
-            variants={itemVariants}
-          >
-            <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-            </svg>
-          </motion.div>
-          
           <motion.h1 
             className="text-4xl md:text-5xl text-gray-900 mb-8 tracking-tight leading-tight"
             variants={itemVariants}
@@ -85,54 +76,57 @@ const BusinessPricingPage = () => {
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Starter Plan */}
+            {/* Free Trial Plan */}
             <motion.div 
-              className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-white border-2 border-black rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 relative"
               variants={itemVariants}
             >
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-light">Special Offer</span>
+              </div>
+              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Starter</h4>
-              <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$19</div>
-              <p className="text-gray-600 mb-6 text-center">per month</p>
+              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Free Trial</h4>
+              <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$0</div>
+              <p className="text-gray-600 mb-6 text-center">1 month trial</p>
               <ul className="text-left space-y-3 mb-8">
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Up to 100 appointments/month
+                  Up to 200 appointments/month
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Basic analytics
+                  History and analytics
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Email support
+                  Custom branding
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Mobile app access
+                  No credit card required
                 </li>
               </ul>
               <Link
                 to="/manage/login"
-                className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
+                className="w-full px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
               >
                 Start Free Trial
               </Link>
             </motion.div>
 
-            {/* Professional Plan */}
+            {/* Basic Plan */}
             <motion.div 
               className="bg-white border-2 border-blue-500 rounded-2xl p-8 shadow-xl relative"
               variants={itemVariants}
@@ -145,8 +139,55 @@ const BusinessPricingPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Professional</h4>
-              <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$49</div>
+              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Basic</h4>
+              <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$10</div>
+              <p className="text-gray-600 mb-6 text-center">per month</p>
+              <ul className="text-left space-y-3 mb-8">
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Up to 200 appointments/month
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  History and analytics
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Custom branding
+                </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Priority support
+                </li>
+              </ul>
+              <Link
+                to="/manage/login"
+                className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
+              >
+                Join Now
+              </Link>
+            </motion.div>
+
+            {/* Expansion Plan */}
+            <motion.div 
+              className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+              variants={itemVariants}
+            >
+              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                </svg>
+              </div>
+              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Expansion</h4>
+              <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$20</div>
               <p className="text-gray-600 mb-6 text-center">per month</p>
               <ul className="text-left space-y-3 mb-8">
                 <li className="flex items-center">
@@ -159,60 +200,7 @@ const BusinessPricingPage = () => {
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Advanced analytics
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Priority support
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Custom branding
-                </li>
-              </ul>
-              <Link
-                to="/manage/login"
-                className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
-              >
-                Start Free Trial
-              </Link>
-            </motion.div>
-
-            {/* Enterprise Plan */}
-            <motion.div 
-              className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
-              variants={itemVariants}
-            >
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Enterprise</h4>
-              <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$99</div>
-              <p className="text-gray-600 mb-6 text-center">per month</p>
-              <ul className="text-left space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Multi-location support
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  API access
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Dedicated account manager
+                  Custom reports
                 </li>
                 <li className="flex items-center">
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,12 +208,18 @@ const BusinessPricingPage = () => {
                   </svg>
                   Custom integrations
                 </li>
+                <li className="flex items-center">
+                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Priority support
+                </li>
               </ul>
               <Link
                 to="/manage/login"
                 className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
               >
-                Contact Sales
+                Join Now
               </Link>
             </motion.div>
           </div>
