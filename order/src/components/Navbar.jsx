@@ -66,11 +66,11 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                 <button
                   onClick={() => setActiveTab('dashboard')}
                   className={`
-                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
-                    ${activeTab === 'dashboard'
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                    }
+                                          px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                      ${activeTab === 'dashboard'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                      }
                   `}
                 >
                   Dashboard
@@ -78,11 +78,11 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                 <button
                   onClick={() => setActiveTab('calendar')}
                   className={`
-                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
-                    ${activeTab === 'calendar'
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                    }
+                                          px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                      ${activeTab === 'calendar'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                      }
                   `}
                 >
                   Calendar
@@ -90,11 +90,11 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                 <button
                   onClick={() => setActiveTab('history')}
                   className={`
-                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
-                    ${activeTab === 'history'
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                    }
+                                          px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                      ${activeTab === 'history'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                      }
                   `}
                 >
                   History
@@ -102,11 +102,11 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                 <button
                   onClick={() => setActiveTab('services')}
                   className={`
-                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
-                    ${activeTab === 'services'
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                    }
+                                          px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                      ${activeTab === 'services'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                      }
                   `}
                 >
                   Services
@@ -114,11 +114,11 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                 <button
                   onClick={() => setActiveTab('profile')}
                   className={`
-                    px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
-                    ${activeTab === 'profile'
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
-                    }
+                                          px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
+                      ${activeTab === 'profile'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                      }
                   `}
                 >
                   Profile
@@ -219,8 +219,14 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
 
         {/* Mobile Menu Accordion */}
         {isMobileMenuOpen && (
-          <div className="absolute top-16 left-0 right-0 md:hidden bg-white bg-opacity-95 backdrop-blur-sm border-b border-gray-200 shadow-lg z-50">
-            <div className="py-3 space-y-1">
+                      <motion.div 
+              className="absolute top-16 left-0 right-0 md:hidden bg-white bg-opacity-95 backdrop-blur-sm border-t border-gray-200 shadow-lg z-50"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+            <div className="pt-1 space-y-1">
               {isAdmin && currentUser ? (
                 <>
                   <button
@@ -228,7 +234,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'dashboard'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -240,7 +246,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'calendar'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -252,7 +258,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'history'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -264,7 +270,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'services'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -276,14 +282,14 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'profile'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
                   >
                     Profile
                   </button>
-                  <div className="border-t border-gray-200 mt-2 pt-2">
+                  <div className="border-t ">
                     <button
                       onClick={() => { onLogout(); setIsMobileMenuOpen(false); }}
                       className="w-full text-left px-4 py-3 text-sm font-light bg-gray-800 hover:bg-gray-900 text-white transition-colors duration-200"
@@ -345,7 +351,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   >
                     Business Pricing
                   </button>
-                  <div className="border-t border-gray-200 mt-2 pt-2">
+                  <div className="border-t ">
                     <button
                       onClick={() => { navigate('/manage/login'); setIsMobileMenuOpen(false); }}
                       className="w-full text-left px-4 py-3 text-sm font-light bg-gray-800 hover:bg-gray-900 text-white transition-colors duration-200"
@@ -354,10 +360,10 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     </button>
                   </div>
                 </>
-              ) : null}
-            </div>
-          </div>
-        )}
+                              ) : null}
+              </div>
+            </motion.div>
+          )}
       </div>
     </nav>
   )
