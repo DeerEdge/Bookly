@@ -9,3 +9,10 @@ services:
         value: production
       - key: PORT
         value: 10000
+
+  - type: cron
+    name: keep-alive-cron
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python keep_alive.py
+    schedule: "*/10 * * * *"  # Every 10 minutes
