@@ -143,8 +143,8 @@ const LandingPage = () => {
             className="text-xl text-white mb-12 max-w-3xl mx-auto leading-relaxed"
             variants={textVariants}
           >
-            Discover amazing businesses, book appointments instantly, and manage your schedule with ease. 
-            Whether you're a customer or a business owner, Bookly makes scheduling simple.
+            Book appointments instantly and manage your schedule with ease. 
+            Simple scheduling for customers and businesses.
           </motion.p>
           
           <motion.div 
@@ -154,7 +154,7 @@ const LandingPage = () => {
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
-                placeholder="Search for businesses..."
+                placeholder="Looking for a service?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setShowSearchResults(true)}

@@ -468,6 +468,7 @@ const BusinessServices = ({ business }) => {
                   const isAvailable = isDayAvailable(date)
                   const isOpen = isDayOpen(date)
                   const isPast = date < new Date().setHours(0, 0, 0, 0)
+                  const isOpenWithoutHours = isOpen && !isAvailable && !isClosed
                   
                   return (
                     <button
@@ -488,6 +489,7 @@ const BusinessServices = ({ business }) => {
                                   : 'text-gray-600 bg-transparent hover:bg-red-500 hover:text-white'
                         }
                         ${isToday && isCurrentMonth ? 'ring-2 ring-blue-400 ring-offset-1' : ''}
+                        ${isOpenWithoutHours && isCurrentMonth && !isPast ? 'animate-pulse' : ''}
                       `}
                       onClick={() => {
                         if (isCurrentMonth && !isPast) {
@@ -551,8 +553,11 @@ const BusinessServices = ({ business }) => {
             {/* Business Hours Details - Right Side */}
             <div className="flex-1">
               <div className="space-y-3">
-                {daysOfWeek.map(({ key, label }) => (
-                  <div key={key} className="flex items-center justify-between py-2 border-l-4 pl-4" style={{
+                {daysOfWeek.map(({ key, label }) => {
+                  const isOpenWithoutHours = businessHours[key].isOpen && (!businessHours[key].selectedSlots || businessHours[key].selectedSlots.length === 0);
+                  
+                  return (
+                  <div key={key} className={`flex items-center justify-between py-2 border-l-4 pl-4 ${isOpenWithoutHours ? 'animate-pulse' : ''}`} style={{
                     borderColor: businessHours[key].isOpen && businessHours[key].selectedSlots?.length > 0 
                       ? '#10b981' 
                       : businessHours[key].isOpen 
@@ -599,7 +604,8 @@ const BusinessServices = ({ business }) => {
                       <span className="text-xs text-gray-400 font-light">Closed</span>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
               
               <div className="mt-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">

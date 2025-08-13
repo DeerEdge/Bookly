@@ -68,7 +68,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   className={`
                                           px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
                       ${activeTab === 'dashboard'
-                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
                       }
                   `}
@@ -80,7 +80,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   className={`
                                           px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
                       ${activeTab === 'calendar'
-                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
                       }
                   `}
@@ -92,7 +92,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   className={`
                                           px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
                       ${activeTab === 'history'
-                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
                       }
                   `}
@@ -104,7 +104,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   className={`
                                           px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
                       ${activeTab === 'services'
-                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
                       }
                   `}
@@ -116,7 +116,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   className={`
                                           px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
                       ${activeTab === 'profile'
-                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
                       }
                   `}
@@ -305,7 +305,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'login'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -317,7 +317,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'register'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -332,7 +332,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'find-service'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
@@ -344,7 +344,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     className={`
                       w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
                       ${activeTab === 'business-pricing'
-                        ? 'text-blue-600 bg-blue-50 border-r-4 border-blue-600'
+                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }
                     `}
