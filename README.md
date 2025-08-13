@@ -38,3 +38,4 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:5173`
+ls -la postcss.config.*rm -rf node_modules/.vite
