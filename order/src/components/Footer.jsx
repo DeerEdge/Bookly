@@ -71,7 +71,7 @@ const Footer = () => {
             <h4 className="text-lg font-semibold mb-4 text-white">Support</h4>
             <div className="space-y-2">
               <p className="text-gray-300 text-sm">
-                bookly.support@gmail.com
+                contact@lillybook.com
               </p>
             </div>
           </div>
