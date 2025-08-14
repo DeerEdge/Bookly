@@ -245,7 +245,7 @@ const BusinessPricingPage = () => {
             className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
             variants={itemVariants}
           >
-            Join businesses already using Bookly to streamline their operations and delight their customers.
+            Join businesses already using Lilly to streamline their operations and delight their customers.
           </motion.p>
           <motion.div variants={itemVariants}>
             <Link

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import BLogo from '../assets/B.png'
+import LillyLogo from '../assets/lilly.png'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -32,11 +32,11 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
               <img 
-                src={BLogo} 
-                alt="Bookly" 
+                src={LillyLogo} 
+                alt="Lilly" 
                 className="w-10 h-10 mr-3"
               />
-              <h3 className="text-2xl font-semibold">Bookly</h3>
+              <h3 className="text-2xl font-semibold">Lilly</h3>
             </div>
             <p className="text-gray-300 text-lg leading-relaxed mb-4 max-w-md">
               Streamline your business scheduling with our powerful appointment booking platform. 
@@ -81,7 +81,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-2 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} Bookly. All rights reserved.
+              © {currentYear} Lilly. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">

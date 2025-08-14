@@ -43,8 +43,13 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
             <Link 
               to={currentUser || isAdmin ? "#" : "/"} 
               onClick={handleLogoClick}
-              className={`text-2xl text-gray-900 tracking-tight ${currentUser || isAdmin ? 'cursor-default' : 'cursor-pointer'}`}
+              className={`flex items-center space-x-1 text-2xl text-gray-900 tracking-tight ${currentUser || isAdmin ? 'cursor-default' : 'cursor-pointer'}`}
             >
+              <img 
+                src="/lilly.png" 
+                alt="Lilly Logo" 
+                className="w-10 h-10 object-contain"
+              />
               <motion.span
                 whileHover={{ 
                   textShadow: currentUser || isAdmin ? "none" : "0 0 30px rgba(59, 130, 246, 0.8)"
@@ -54,7 +59,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   ease: "easeInOut"
                 }}
               >
-                Bookly
+                Lilly
               </motion.span>
             </Link>
           </div>

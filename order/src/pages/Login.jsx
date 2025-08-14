@@ -93,8 +93,14 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
-                <Link to="/" className="text-2xl text-gray-900 tracking-tight">
-                  <motion.span
+                
+                              <Link to="/" className="flex items-center space-x-1 text-2xl text-gray-900 tracking-tight">
+                <img 
+                  src="/lilly.png" 
+                  alt="Lilly Logo" 
+                  className="w-8 h-8 object-contain"
+                />
+                <motion.span
                     whileHover={{ 
                       textShadow: "0 0 30px rgba(59, 130, 246, 0.8)"
                     }}
@@ -103,7 +109,7 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
                       ease: "easeInOut"
                     }}
                   >
-                    Bookly
+                    Lilly
                   </motion.span>
                 </Link>
               </div>
@@ -119,7 +125,14 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
               initial="hidden"
               animate="visible"
             >
-              <h2 className="text-3xl font-light text-gray-900 mb-2">Bookly</h2>
+              <div className="flex items-center justify-center space-x-3 mb-2">
+                <img 
+                  src="/lilly.png" 
+                  alt="Lilly Logo" 
+                  className="w-10 h-10 object-contain"
+                />
+                <h2 className="text-3xl font-light text-gray-900">Lilly</h2>
+              </div>
               <p className="text-gray-500 font-light">Register your business</p>
             </motion.div>
             
@@ -167,8 +180,13 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Link to="/" className="text-2xl text-gray-900 tracking-tight">
-                <motion.span
+                              <Link to="/" className="flex items-center space-x-1 text-2xl text-gray-900 tracking-tight">
+                  <img 
+                    src="/lilly.png" 
+                    alt="Lilly Logo" 
+                    className="w-10 h-10 object-contain"
+                  />
+                  <motion.span
                   whileHover={{ 
                     textShadow: "0 0 30px rgba(59, 130, 246, 0.8)"
                   }}
@@ -177,7 +195,7 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
                     ease: "easeInOut"
                   }}
                 >
-                  Bookly
+                  Lilly
                 </motion.span>
               </Link>
             </div>
@@ -193,7 +211,9 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
             initial="hidden"
             animate="visible"
           >
-            <h2 className="text-3xl font-light text-gray-900 mb-2">Bookly</h2>
+            <div className="flex items-center justify-center space-x-3 mb-2">
+              <h2 className="text-3xl font-light text-gray-900">Lilly</h2>
+            </div>
             <p className="text-gray-500 font-light">Sign in to your business account</p>
           </motion.div>
 

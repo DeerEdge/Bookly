@@ -238,7 +238,7 @@ const LandingPage = () => {
               Everything You Need
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From finding services to managing your business, Bookly provides all the tools you need for seamless scheduling.
+              From finding services to managing your business, Lilly provides all the tools you need for seamless scheduling.
             </p>
           </div>
           
@@ -313,7 +313,7 @@ const LandingPage = () => {
             className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
             variants={itemVariants}
           >
-            Join thousands of businesses and customers already using Bookly to streamline their scheduling.
+            Join businesses and customers already using Lilly to streamline their scheduling.
           </motion.p>
           <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" variants={itemVariants}>
             <Link
