@@ -28,7 +28,7 @@ FLASK_ENV=production
 ### Step 3: Update Netlify Environment Variables
 In Netlify site settings → Environment variables, add:
 ```
-VITE_API_BASE_URL=https://your-render-service-name.onrender.com/api
+VITE_API_BASE_URL=https://bookly-hwx0.onrender.com/api
 ```
 
 ### Step 4: Redeploy Frontend

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 # Configure CORS to allow requests from Netlify, Render, and localhost
 CORS(app, 
-     origins=["https://bookwithbookly.netlify.app", "http://localhost:5173", "http://localhost:3000"],
+     origins=["https://lillybook.netlify.app", "http://localhost:5173", "http://localhost:3000", "https://lillybook.com"],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
      allow_headers=["Content-Type", "Authorization", "Accept"],
      supports_credentials=True)
