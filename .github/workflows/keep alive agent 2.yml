@@ -1,0 +1,36 @@
+name: Keep Render Backend Alive
+
+on:
+  schedule:
+    # Run every 10 minutes (cron format: minute hour day month day-of-week)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Ping Backend Health Endpoint
+      run: |
+        echo "Pinging backend to keep it alive..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://bookly-hwx0.onrender.com/api/health)
+        echo "Health endpoint response: $response"
+        
+        if [ $response -eq 200 ]; then
+          echo "✅ Backend is alive and healthy"
+        else
+          echo "⚠️ Backend responded with status: $response"
+        fi
+        
+    - name: Ping Root Endpoint (Backup)
+      run: |
+        echo "Pinging root endpoint as backup..."
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://bookly-hwx0.onrender.com/)
+        echo "Root endpoint response: $response"
+        
+        if [ $response -eq 200 ]; then
+          echo "✅ Root endpoint is responding"
+        else
+          echo "⚠️ Root endpoint responded with status: $response"
+        fi
