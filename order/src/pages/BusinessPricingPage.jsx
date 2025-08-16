@@ -54,7 +54,7 @@ const BusinessPricingPage = () => {
             className="text-4xl md:text-5xl text-gray-900 mb-8 tracking-tight leading-tight"
             variants={itemVariants}
           >
-            Business Pricing Plans
+            Pricing Plans
           </motion.h1>
           
           <motion.p 

@@ -165,7 +165,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
               </>
             ) : isPublic ? (
               <>
-                <button
+                {/*<button
                   onClick={() => handlePublicTabClick('find-service')}
                   className={`
                     px-4 py-2 text-sm font-light rounded-md transition-colors duration-200
@@ -176,7 +176,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                   `}
                 >
                   Find a Service
-                </button>
+                </button>*/}
                 <button
                   onClick={() => handlePublicTabClick('business-pricing')}
                   className={`
@@ -187,7 +187,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     }
                   `}
                 >
-                  Business Pricing
+                  Pricing
                 </button>
                 <div className="ml-2 mr-3 border-l border-gray-200 h-7"></div>
                 <button
@@ -354,7 +354,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                       }
                     `}
                   >
-                    Business Pricing
+                    Pricing
                   </button>
                   <div className="border-t ">
                     <button
