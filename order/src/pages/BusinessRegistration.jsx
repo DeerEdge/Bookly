@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import Notification from '../components/Notification'
 import useNotification from '../hooks/useNotification'
 
@@ -81,11 +83,48 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-light text-gray-900 mb-2">Register Your Business</h1>
-        <p className="text-gray-500 font-light">Set up your business profile and services</p>
-      </div>
+    <div className="min-h-screen bg-gray-25">
+      {/* Navigation */}
+      <nav className="bg-transparent border-b border-transparent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <Link to="/" className="flex items-center space-x-1 text-2xl text-gray-900 tracking-tight">
+                <img 
+                  src="/lilly.png" 
+                  alt="Lilly Logo" 
+                  className="w-10 h-10"
+                />
+                <motion.span
+                  whileHover={{ 
+                    textShadow: "0 0 30px rgba(59, 130, 246, 0.8)"
+                  }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeInOut"
+                  }}
+                >
+                  Lilly
+                </motion.span>
+              </Link>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link
+                to="/manage/login"
+                className="text-sm text-gray-600 hover:text-gray-900 font-light"
+              >
+                Already have an account? Sign in
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-light text-gray-900 mb-2">Register Your Business</h1>
+          <p className="text-gray-500 font-light">Set up your business profile and services</p>
+        </div>
 
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -270,6 +309,7 @@ const BusinessRegistration = ({ onBusinessRegistered }) => {
         onClose={hideNotification}
         duration={notification.duration}
       />
+      </div>
     </div>
   )
 }

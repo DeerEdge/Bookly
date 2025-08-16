@@ -318,14 +318,8 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                     Sign In
                   </button>
                   <button
-                    onClick={() => handleMobileTabClick('register')}
-                    className={`
-                      w-full text-left px-4 py-3 text-sm font-light transition-colors duration-200
-                      ${activeTab === 'register'
-                        ? 'text-blue-600 bg-blue-50 border-l-4 border-blue-600'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                      }
-                    `}
+                    onClick={() => navigate('/manage/register')}
+                    className="w-full text-left px-4 py-3 text-sm font-light text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
                   >
                     Register Business
                   </button>

@@ -9,6 +9,7 @@ import BusinessPricingPage from './pages/BusinessPricingPage'
 import BusinessBookingPage from './components/BusinessBookingPage'
 import apiService from './services/api'
 import 'react-calendar/dist/Calendar.css';
+import BusinessRegistration from './pages/BusinessRegistration';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -160,6 +161,14 @@ function App() {
             <AdminLogin
               isAuthenticated={isAuthenticated}
               onLogin={handleLogin}
+              onBusinessRegistered={addBusiness}
+            />
+          }
+        />
+        <Route
+          path="/manage/register"
+          element={
+            <BusinessRegistration
               onBusinessRegistered={addBusiness}
             />
           }

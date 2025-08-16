@@ -286,13 +286,12 @@ const Login = ({ onLogin, onRegister, activeTab, setActiveTab, onBusinessRegiste
               className="mt-6 text-center"
               variants={itemVariants}
             >
-              <button
-                onClick={() => setActiveTab('register')}
+              <Link
+                to="/manage/register"
                 className="text-sm text-blue-600 hover:text-blue-500 font-light"
-                disabled={loading}
               >
                 Don't have an account? Register your business
-              </button>
+              </Link>
             </motion.div>
           </motion.div>
         </div>

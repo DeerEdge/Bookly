@@ -119,7 +119,7 @@ const BusinessPricingPage = () => {
                 </li>
               </ul>
               <Link
-                to="/manage/login"
+                to="/manage/register"
                 className="w-full px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
               >
                 Start Free Trial
@@ -169,7 +169,7 @@ const BusinessPricingPage = () => {
                 </li>
               </ul>
               <Link
-                to="/manage/login"
+                to="/manage/register"
                 className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
               >
                 Join Now
@@ -216,7 +216,7 @@ const BusinessPricingPage = () => {
                 </li>
               </ul>
               <Link
-                to="/manage/login"
+                to="/manage/register"
                 className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 inline-block text-center"
               >
                 Join Now
@@ -249,7 +249,7 @@ const BusinessPricingPage = () => {
           </motion.p>
           <motion.div variants={itemVariants}>
             <Link
-              to="/manage/login"
+              to="/manage/register"
               className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-md font-light text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
             >
               Get Started Free
