@@ -189,7 +189,7 @@ const Navbar = ({ activeTab, setActiveTab, currentUser, onLogout, isAdmin, isPub
                 >
                   Pricing
                 </button>
-                <div className="ml-2 mr-3 border-l border-gray-200 h-7"></div>
+                <div className="ml-1 mr-4 border-l border-gray-200 h-7"></div>
                 <button
                   onClick={() => navigate('/manage/login')}
                   className="px-4 py-2 text-sm font-light bg-gray-800 hover:bg-gray-900 text-white rounded-md transition-colors duration-200"

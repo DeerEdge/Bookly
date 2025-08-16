@@ -165,7 +165,7 @@ const BusinessPricingPage = () => {
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Priority support
+                  Automated email support
                 </li>
               </ul>
               <Link
@@ -176,7 +176,7 @@ const BusinessPricingPage = () => {
               </Link>
             </motion.div>
 
-            {/* Expansion Plan */}
+            {/* Pro Plan */}
             <motion.div 
               className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
               variants={itemVariants}
@@ -186,7 +186,7 @@ const BusinessPricingPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
                 </svg>
               </div>
-              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Expansion</h4>
+              <h4 className="text-2xl text-gray-900 mb-2 tracking-tight text-center">Pro</h4>
               <div className="text-4xl text-gray-900 mb-2 tracking-tight text-center">$20</div>
               <p className="text-gray-600 mb-6 text-center">per month</p>
               <ul className="text-left space-y-3 mb-8">
@@ -212,7 +212,7 @@ const BusinessPricingPage = () => {
                   <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Priority support
+                  Email and SMS priority support
                 </li>
               </ul>
               <Link
